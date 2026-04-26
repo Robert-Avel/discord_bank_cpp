@@ -5,6 +5,7 @@
 #include <dpp/message.h>
 #include <dpp/once.h>
 #include "bank.cpp"
+#include "simple_format.cpp"
 
 static CentralBank db;
 
@@ -15,51 +16,12 @@ int main() {
 
     bot.on_log(dpp::utility::cout_logger());
 
-    bot.on_message_create([&bot](const dpp::message_create_t& message_) {
-        if(message_.msg.author.id != bot.cluster_id) {
-            message_.reply(message_.msg.content);
-        }
-    });
-
     /* The event is fired when someone issues your commands */
     bot.on_slashcommand([&bot](const dpp::slashcommand_t& event) {
         /* Check which command they ran */
-        if (event.command.get_command_name() == "embed") {
-            /* Create an embed */
-            dpp::embed embed = dpp::embed()
-                .set_color(dpp::colors::sti_blue)
-                .set_title("Some name")
-                .set_url("https://dpp.dev/")
-                .set_author("Some name", "https://dpp.dev/", "https://dpp.dev/DPP-Logo.png")
-                .set_description("Some description here")
-                .set_thumbnail("https://dpp.dev/DPP-Logo.png")
-                .add_field(
-                    "Regular field title",
-                    "Some value here"
-                )
-                .add_field(
-                    "Inline field title",
-                    "Some value here",
-                    true
-                )
-                .add_field(
-                    "Inline field title",
-                    "Some value here",
-                    true
-                )
-                .set_image("https://dpp.dev/DPP-Logo.png")
-                .set_footer(
-                    dpp::embed_footer()
-                    .set_text("Some footer text here")
-                    .set_icon("https://dpp.dev/DPP-Logo.png")
-                )
-                .set_timestamp(time(0));
-
-            /* Create a message with the content as our new embed. */
-            dpp::message msg(event.command.channel_id, embed);
-
-            /* Reply to the user with the message, containing our embed. */
-            event.reply(msg);
+        if(event.command.get_command_name() == "openbank") {
+            db.openBank(event.command.guild_id.str());
+            event.reply("A New Bank was created for this server");
         }
     });
 
@@ -67,7 +29,8 @@ int main() {
 
         if (dpp::run_once<struct register_bot_commands>()) {
             /* Create and register a command when the bot is ready */
-            bot.global_command_create(dpp::slashcommand("embed", "Send a test embed!", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("openbank", "Open a New bank in this server", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("bankinfo", "Server Bank Info", bot.me.id));
         }
     });
 

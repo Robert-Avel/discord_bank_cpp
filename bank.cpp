@@ -1,4 +1,5 @@
 //USANDO UM JOGO DE DINHEIRO COMO EXEMPLO
+#pragma  once
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -9,37 +10,6 @@ enum Status {
     ALREADY_EXIST,
     NOT_FOUND,
     NOT_ENOUGH_BALANCE
-};
-
-
-enum Action {
-    CREATE,
-    DELETE,
-    EDIT,
-    SELECT,
-    DEPOSIT,
-    PAY,
-    TRANSFER
-};
-
-
-enum Target {
-    MONEY,
-    BANK,
-    ACCOUNT
-};
-
-
-enum PayloadType {
-    P_MONEY,
-    P_BANK,
-    P_ACCOUNT,
-    P_PRIMAL_DEPOSIT,
-    P_DEPOSTIT,
-    P_WITHDRAW,
-    P_TRANSFER,
-    P_ID,
-    P_MONEY_VALUE
 };
 
 
@@ -66,7 +36,7 @@ class Account {
 
     std::string getID() {return id;}
 
-    cents getBalance(std::string money_id) {
+    const cents getBalance(std::string money_id) {
         Money* money = _getMoney(money_id);
         if (money == nullptr) {return 0;}
         return money->value;
@@ -124,9 +94,10 @@ class Bank {
     public:
     Bank(std::string id) {this->id = id;}
 
-    std::string getID() {return id;}
+    std::string getID() const {return id;}
+    size_t getAccontN() const {return acconts.size();}
 
-    Account* getAccont(const std::string id) {
+    const Account* getAccont(const std::string id) {
         return _getAccont(id);
     }
 
@@ -139,13 +110,6 @@ class Bank {
         return SUCCESS;
     }
 
-    Status deposit(payload::Deposit& d) {
-        return this->deposit(
-            d.value,
-            d.mt_.id, d.mt_.symbol,
-            d.to_id
-        );
-    }
 
     Status pay(cents value, std::string money_id, std::string money_symbol, std::string from_id) {
         Account* target = this->_getAccont(from_id);
@@ -157,23 +121,15 @@ class Bank {
         return NOT_ENOUGH_BALANCE;
     }
 
-    Status pay(payload::Pay& p) {
-        return this->pay(
-            p.value,
-            p.mt_.id, p.mt_.symbol,
-            p.from_id
-        );
-    }
 
-
-    bool openAccont(std::string id) {
+    Status openAccont(std::string id) {
         if(_getAccont(id) == nullptr) {
             acconts.push_back(
                 Account{id}
             );
-            return true;
+            return SUCCESS;
         }
-        return false;
+        return ALREADY_EXIST;
     }
 
     Status transference(
@@ -184,8 +140,8 @@ class Bank {
         std::string to_id
     ) {
         Account* to, *from;
-        to = getAccont(to_id);
-        from = getAccont(from_id);
+        to = _getAccont(to_id);
+        from = _getAccont(from_id);
         if(to == nullptr || from == nullptr) {return NOT_FOUND;}
 
         if (from->removeMoney(money_id, value)) {
@@ -220,5 +176,9 @@ class CentralBank {
             return SUCCESS;
         }
         return ALREADY_EXIST;
+    }
+
+    Status openAccont(std::string bank_id, std::string accont_id) {
+        return this->getBank(bank_id)->openAccont(accont_id);
     }
 };
