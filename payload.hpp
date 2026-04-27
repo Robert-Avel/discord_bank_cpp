@@ -1,3 +1,4 @@
+#pragma once
 #include <cstddef>
 #include <string>
 #include <cstdint>
@@ -39,10 +40,12 @@ namespace payload {
     };
 }
 
+
 struct PayLoad {
     std::string operation;
-    std::string message;
     std::string status;
+    std::string message;
+    std::string payload_header;
     std::variant<
         std::string,
         MoneyType,
