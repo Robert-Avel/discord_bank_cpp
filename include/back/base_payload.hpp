@@ -1,21 +1,22 @@
 #pragma once
 #include <cstddef>
 #include <string>
-#include <cstdint>
 #include <variant>
 #include <vector>
-typedef uint32_t cents;
+#include "bank_status.hpp"
+#include "money.hpp"
 
 
-struct MoneyType {
-    std::string id;
-    std::string symbol;
+enum Operation {
+    OPEN_BANK,
+    OPEN_ACCONT,
+    CHECK_BALANCE,
+    NEW_COIN,
+    PAYMENT,
+    DEPOSIT,
+    TRANSFERENCE
 };
 
-struct Money {
-    MoneyType _mt;
-    cents value;
-};
 
 namespace payload {
     struct Deposit {
@@ -40,18 +41,18 @@ namespace payload {
     };
 }
 
+using PayloadVariant = std::variant<
+    std::string,
+    MoneyType,
+    Money,
+    std::vector<Money>,
+    payload::Deposit,
+    payload::Pay,
+    payload::Trasference
+>;
 
-struct PayLoad {
-    std::string operation;
-    std::string status;
-    std::string message;
-    std::variant<
-        std::string,
-        MoneyType,
-        Money,
-        std::vector<Money>,
-        payload::Deposit,
-        payload::Pay,
-        payload::Trasference
-    > payload;
+struct BasePayLoad {
+    Operation operation;
+    Status status;
+    PayloadVariant payload;
 };
