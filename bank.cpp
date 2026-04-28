@@ -179,6 +179,9 @@ class CentralBank {
     }
 
     Status openAccont(std::string bank_id, std::string accont_id) {
-        return this->getBank(bank_id)->openAccont(accont_id);
+        Bank* b = this->getBank(bank_id);
+        if(b == nullptr) {return NOT_FOUND;}
+
+        return b->openAccont(accont_id);
     }
 };

@@ -45,7 +45,6 @@ struct PayLoad {
     std::string operation;
     std::string status;
     std::string message;
-    std::string payload_header;
     std::variant<
         std::string,
         MoneyType,

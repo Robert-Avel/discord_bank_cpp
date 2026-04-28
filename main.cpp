@@ -5,9 +5,19 @@
 #include <dpp/message.h>
 #include <dpp/once.h>
 #include "bank.cpp"
-#include "simple_format.cpp"
+#include "payload.hpp"
+#include "interface.cpp"
 
 static CentralBank db;
+
+
+dpp::embed payloadAssembly(const PayLoad& pl) {
+    return dpp::embed()
+        .set_title(pl.operation)
+        .set_description(pl.message)
+    ;
+}
+
 
 int main() {
     std::string token = getenv("BOT_TOKEN");
@@ -18,10 +28,21 @@ int main() {
 
     /* The event is fired when someone issues your commands */
     bot.on_slashcommand([&bot](const dpp::slashcommand_t& event) {
-        /* Check which command they ran */
-        if(event.command.get_command_name() == "openbank") {
-            db.openBank(event.command.guild_id.str());
-            event.reply("A New Bank was created for this server");
+        if(event.command.get_command_name() == "open-bank") {
+            event.reply(
+                payloadAssembly(
+                    cmd::openbank(&db, event.command.guild_id.str())                )
+            );
+        }
+        else if(event.command.get_command_name() == "open-accont") {
+            event.reply(
+                payloadAssembly(
+                    cmd::openaccont(&db, event.command.guild_id.str(), event.command.usr.id.str())
+                )
+            );
+        }
+        else {
+            event.reply("Erro ao executar o comando, talvez ele não exista ou seja um fantasma");
         }
     });
 
@@ -29,7 +50,8 @@ int main() {
 
         if (dpp::run_once<struct register_bot_commands>()) {
             /* Create and register a command when the bot is ready */
-            bot.global_command_create(dpp::slashcommand("openbank", "Open a New bank in this server", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("open-bank", "Open a New bank in this server", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("open-accont", "Open a New accont for a user in this server", bot.me.id));
             bot.global_command_create(dpp::slashcommand("bankinfo", "Server Bank Info", bot.me.id));
         }
     });
