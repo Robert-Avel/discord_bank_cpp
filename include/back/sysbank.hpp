@@ -5,7 +5,7 @@ class CentralBank {
     std::vector<Bank> banks;
 
     public:
-    CentralBank(): banks() {}
+    CentralBank();
 
     Bank* getBank(std::string id);
     Status openBank(std::string id);

@@ -4,18 +4,21 @@
 #include <dpp/intents.h>
 #include <dpp/message.h>
 #include <dpp/once.h>
-#include "bank.cpp"
-#include "payload.hpp"
-#include "interface.cpp"
+#include "sysbank.hpp"
+#include "interface.hpp"
 
 static CentralBank db;
 
+dpp::embed payloadAssembly(const FinalPayLoad& pl) {
+    dpp::embed buffer{};
+    buffer.set_title(pl.operation)
+          .set_description(pl.message);
 
-dpp::embed payloadAssembly(const PayLoad& pl) {
-    return dpp::embed()
-        .set_title(pl.operation)
-        .set_description(pl.message)
-    ;
+    for(const auto& [name, value]: pl.fields) {
+        buffer.add_field(name, value, true);
+    }
+
+    return buffer;
 }
 
 

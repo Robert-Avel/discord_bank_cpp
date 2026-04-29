@@ -1,16 +1,20 @@
+#pragma once
 #include "base_payload.hpp"
 #include <map>
 #include <string>
+using FieldMap = std::map<std::string, std::string>;
 
 
 class FinalPayLoad {
+    FieldMap formatField(const PayloadVariant& pl);
+
+    public:
     std::string operation;
     std::string status;
     std::string message;
-    std::map<std::string, std::string> fields;
+    FieldMap fields;
 
-    std::map<std::string, std::string> formatField(PayloadVariant& pl);
-
-    public:
     FinalPayLoad(const BasePayLoad& bpl);
+
+    FinalPayLoad(Operation operation, Status status, PayloadVariant& payload);
 };

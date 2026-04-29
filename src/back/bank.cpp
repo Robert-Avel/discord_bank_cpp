@@ -1,4 +1,3 @@
-#pragma once
 #include "bank.hpp"
 #include "bank_status.hpp"
 

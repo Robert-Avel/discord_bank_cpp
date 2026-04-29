@@ -9,9 +9,7 @@
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
-using FieldMap = std::map<std::string, std::string>;
-
-FieldMap FinalPayLoad::formatField(PayloadVariant& pl) {
+FieldMap FinalPayLoad::formatField(const PayloadVariant& pl) {
     return std::visit(overloaded {
 
         [](std::string& s) {return FieldMap{{"Obs:", s}};},
@@ -61,6 +59,9 @@ FinalPayLoad::FinalPayLoad(const BasePayLoad& bpl) {
     this->operation = operation_PT.at(bpl.operation);
     this->status = status_PT.at(bpl.status);
     this->message = messages_PT.at({bpl.operation, bpl.status});
-
-
+    this->fields = formatField(bpl.payload);
 }
+
+
+FinalPayLoad::FinalPayLoad(Operation operation, Status status, PayloadVariant& payload)
+:FinalPayLoad(BasePayLoad{operation, status, payload}) {}
