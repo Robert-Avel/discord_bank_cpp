@@ -15,6 +15,4 @@ class FinalPayLoad {
     FieldMap fields;
 
     FinalPayLoad(const BasePayLoad& bpl);
-
-    FinalPayLoad(Operation operation, Status status, PayloadVariant& payload);
 };

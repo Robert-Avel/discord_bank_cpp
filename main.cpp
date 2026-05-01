@@ -10,7 +10,7 @@
 static CentralBank db;
 
 dpp::embed payloadAssembly(const FinalPayLoad& pl) {
-    dpp::embed buffer{};
+    dpp::embed buffer;
     buffer.set_title(pl.operation)
           .set_description(pl.message);
 
@@ -34,13 +34,27 @@ int main() {
         if(event.command.get_command_name() == "open-bank") {
             event.reply(
                 payloadAssembly(
-                    cmd::openbank(&db, event.command.guild_id.str())                )
+                    cmd::open_bank(&db, event.command.guild_id.str())                )
             );
         }
         else if(event.command.get_command_name() == "open-accont") {
             event.reply(
                 payloadAssembly(
-                    cmd::openaccont(&db, event.command.guild_id.str(), event.command.usr.id.str())
+                    cmd::open_accont(&db, event.command.guild_id.str(), event.command.usr.id.str())
+                )
+            );
+        }
+        else if(event.command.get_command_name() == "bank-info") {
+            event.reply(
+                payloadAssembly(
+                    cmd::bank_info(&db, event.command.guild_id.str())
+                )
+            );
+        }
+        else if(event.command.get_command_name() == "account-info") {
+            event.reply(
+                payloadAssembly(
+                    cmd::account_info(&db, event.command.guild_id.str(), event.command.usr.id.str())
                 )
             );
         }
@@ -55,7 +69,8 @@ int main() {
             /* Create and register a command when the bot is ready */
             bot.global_command_create(dpp::slashcommand("open-bank", "Open a New bank in this server", bot.me.id));
             bot.global_command_create(dpp::slashcommand("open-accont", "Open a New accont for a user in this server", bot.me.id));
-            bot.global_command_create(dpp::slashcommand("bankinfo", "Server Bank Info", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("bank-info", "Server Bank Info", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("account-info", "User Accont Info", bot.me.id));
         }
     });
 

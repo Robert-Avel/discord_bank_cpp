@@ -13,5 +13,5 @@ struct Money {
     MoneyType _mt;
     cents value;
 
-    std::string format();
+    std::string format() const;
 };

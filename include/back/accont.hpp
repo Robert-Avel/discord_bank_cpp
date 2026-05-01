@@ -12,7 +12,8 @@ class Account {
     public:
     Account(std::string id_);
 
-    std::string getID();
+    std::string getID() const;
+    std::string formatBalance() const;
 
     const cents getBalance(std::string money_id);
     void addMoney(std::string id, std::string symbol, cents value);

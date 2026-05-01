@@ -1,3 +1,4 @@
+#include "bank_status.hpp"
 #include "base_payload.hpp"
 #include <map>
 
@@ -7,6 +8,8 @@ const std::map<Operation, std::string>
 operation_PT = {
     {OPEN_BANK, "Abrir Banco"},
     {OPEN_ACCONT, "Abrir Conta"},
+    {INFO_BANK, "Informaçôes do Banco"},
+    {INFO_ACCOUNT, "Informaçôes da Conta"},
     {CHECK_BALANCE, "Saldo de Conta"},
     {NEW_COIN, "Nova Moeda"},
     {PAYMENT, "Pagamento"},
@@ -33,7 +36,17 @@ messages_PT = {
     // --- OPEN_ACCONT ---
     {{OPEN_ACCONT, Status::SUCCESS},          "✅ Sua conta foi aberta! Bem-vindo ao sistema financeiro."},
     {{OPEN_ACCONT, Status::ALREADY_EXIST},    "🆔 Você já possui uma conta ativa em nosso banco."},
-    {{OPEN_ACCONT, Status::NOT_FOUND},        "❌ Não foi possível criar sua conta: Banco não encontrado."},
+    {{OPEN_ACCONT, Status::NOT_FOUND},        "🚫 Não foi possível criar sua conta: Banco não encontrado."},
+
+
+    // --- INFO_BANK ---
+    {{INFO_BANK, Status::SUCCESS},            "📄Infomações do Banco"},
+    {{INFO_BANK, Status::NOT_FOUND},          "🚫Banco não encontrado"},
+
+
+    // --- INFO_ACCOUNT ---
+    {{INFO_ACCOUNT, Status::SUCCESS},        "📄Infomações da Conta"},
+    {{INFO_ACCOUNT, Status::NOT_FOUND},      "🚫Banco ou Conta não encontrado"},
 
     // --- CHECK_BALANCE ---
     {{CHECK_BALANCE, Status::SUCCESS},        "💰 Extrato gerado com sucesso. Confira seus valores abaixo."},

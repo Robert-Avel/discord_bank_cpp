@@ -1,5 +1,7 @@
 #include "accont.hpp"
+#include "money.hpp"
 #include <algorithm>
+#include <sstream>
 
 Money* Account::_getMoney(std::string money_id) {
     auto getter = balances.begin();
@@ -16,7 +18,7 @@ Account::Account(std::string id_): balances() {
     this->id = id_;
 }
 
-std::string Account::getID() {return id;}
+std::string Account::getID() const {return id;}
 
 const cents Account::getBalance(std::string money_id) {
     Money* money = _getMoney(money_id);
@@ -55,4 +57,16 @@ bool Account::removeMoney(std::string id, cents value) {
     else {return false;}
 
     return true;
+}
+
+
+std::string Account::formatBalance() const {
+    if (this->balances.empty()) {
+        return "0";
+    }
+    std::stringstream buffer;
+    for(const Money& m: this->balances) {
+        buffer << m.format() << "\n";
+    }
+    return buffer.str();
 }

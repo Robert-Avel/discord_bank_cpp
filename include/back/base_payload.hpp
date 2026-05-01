@@ -10,6 +10,8 @@
 enum Operation {
     OPEN_BANK,
     OPEN_ACCONT,
+    INFO_BANK,
+    INFO_ACCOUNT,
     CHECK_BALANCE,
     NEW_COIN,
     PAYMENT,
@@ -39,6 +41,10 @@ namespace payload {
         std::string id;
         size_t accountN;
     };
+    struct Account {
+        std::string id;
+        std::string balances;
+    };
 }
 
 using PayloadVariant = std::variant<
@@ -48,7 +54,9 @@ using PayloadVariant = std::variant<
     std::vector<Money>,
     payload::Deposit,
     payload::Pay,
-    payload::Trasference
+    payload::Trasference,
+    payload::Bank,
+    payload::Account
 >;
 
 struct BasePayLoad {
