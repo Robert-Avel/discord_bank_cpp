@@ -11,7 +11,8 @@ operation_PT = {
     {INFO_BANK, "Informaçôes do Banco"},
     {INFO_ACCOUNT, "Informaçôes da Conta"},
     {CHECK_BALANCE, "Saldo de Conta"},
-    {NEW_COIN, "Nova Moeda"},
+    {NEW_MONEY, "Nova Moeda"},
+    {INFO_MONEY, "Informação de Moeda"},
     {PAYMENT, "Pagamento"},
     {DEPOSIT, "Deposito"},
     {TRANSFERENCE, "Transferência"}
@@ -53,9 +54,13 @@ messages_PT = {
     {{CHECK_BALANCE, Status::NOT_FOUND},      "🚫 Você ainda não possui uma conta. Use 'Abrir Conta' primeiro."},
 
     // --- NEW_COIN ---
-    {{NEW_COIN, Status::SUCCESS},             "🪙 Uma nova moeda foi registrada na economia do servidor."},
-    {{NEW_COIN, Status::ALREADY_EXIST},       "⚠️ Essa moeda já existe ou possui um símbolo duplicado."},
-    {{NEW_COIN, Status::NOT_FOUND},           "❌ Erro: Autoridade bancária não encontrada para criar moedas."},
+    {{NEW_MONEY, Status::SUCCESS},             "🪙 Uma nova moeda foi registrada na economia do servidor."},
+    {{NEW_MONEY, Status::ALREADY_EXIST},       "⚠️ Essa moeda já existe ou possui um símbolo duplicado."},
+    {{NEW_MONEY, Status::NOT_FOUND},           "❌ Erro: Autoridade bancária não encontrada para criar moedas."},
+
+    {{INFO_MONEY, Status::SUCCESS},             "🪙 Informação da Moeda"},
+    {{INFO_MONEY, Status::NOT_FOUND},           "🚫 Moeda não encontrada ou o Banco nâo foi aberto neste servidor"},
+
 
     // --- PAYMENT ---
     {{PAYMENT, Status::SUCCESS},              "💸 Pagamento processado! O destinatário já recebeu os fundos."},

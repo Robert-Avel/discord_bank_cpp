@@ -6,3 +6,10 @@ std::string Money::format() const {
     buffer << this->_mt.symbol << " " << this->value << " (" << this->_mt.id << ")";
     return buffer.str();
 }
+
+
+std::string MoneyType::format() const {
+    std::stringstream buffer;
+    buffer << id << "(" << symbol << ")";
+    return buffer.str();
+}

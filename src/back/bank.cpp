@@ -1,5 +1,6 @@
 #include "bank.hpp"
 #include "bank_status.hpp"
+#include "money.hpp"
 
 Account* Bank::_getAccont(const std::string id) {
     for(Account& a: acconts) {
@@ -67,4 +68,27 @@ Status Bank::transference(
         return SUCCESS;
     }
     return NOT_ENOUGH_BALANCE;
+}
+
+
+Status Bank::moneyNew(std::string id, std::string symbol) {
+    for (MoneyType& m: white_list_money) {
+        if(m.id == id || m.symbol == symbol) {
+            return ALREADY_EXIST;
+        }
+    }
+    white_list_money.push_back({id, symbol});
+    return SUCCESS;
+}
+
+
+MoneyType* Bank::moneyGet(std::string id) {
+    if(white_list_money.empty()) {return nullptr;}
+
+    for(MoneyType& m: white_list_money) {
+        if(m.id == id) {
+            return &m;
+        }
+    }
+    return nullptr;
 }

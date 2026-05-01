@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <dpp/appcommand.h>
 #include <dpp/dispatcher.h>
 #include <dpp/dpp.h>
 #include <dpp/intents.h>
@@ -15,7 +16,7 @@ dpp::embed payloadAssembly(const FinalPayLoad& pl) {
           .set_description(pl.message);
 
     for(const auto& [name, value]: pl.fields) {
-        buffer.add_field(name, value, true);
+        buffer.add_field(name, value, false);
     }
 
     return buffer;
@@ -30,7 +31,7 @@ int main() {
     bot.on_log(dpp::utility::cout_logger());
 
     /* The event is fired when someone issues your commands */
-    bot.on_slashcommand([&bot](const dpp::slashcommand_t& event) {
+    bot.on_slashcommand([](const dpp::slashcommand_t& event) {
         if(event.command.get_command_name() == "open-bank") {
             event.reply(
                 payloadAssembly(
@@ -58,6 +59,39 @@ int main() {
                 )
             );
         }
+        else if(event.command.get_command_name() == "account-info") {
+            event.reply(
+                payloadAssembly(
+                    cmd::account_info(&db, event.command.guild_id.str(), event.command.usr.id.str())
+                )
+            );
+        }
+        else if(event.command.get_command_name() == "account-info") {
+            event.reply(
+                payloadAssembly(
+                    cmd::account_info(&db, event.command.guild_id.str(), event.command.usr.id.str())
+                )
+            );
+        }
+        else if(event.command.get_command_name() == "money-new") {
+            event.reply(
+                payloadAssembly(
+                    cmd::money_new(&db, event.command.guild_id.str(),
+                        std::get<std::string>(event.get_parameter("money-id")),
+                        std::get<std::string>(event.get_parameter("money-symbol"))
+                    )
+                )
+            );
+        }
+        else if(event.command.get_command_name() == "money-info") {
+            event.reply(
+                payloadAssembly(
+                    cmd::money_info(&db, event.command.guild_id.str(),
+                        std::get<std::string>(event.get_parameter("money-id"))
+                    )
+                )
+            );
+        }
         else {
             event.reply("Erro ao executar o comando, talvez ele não exista ou seja um fantasma");
         }
@@ -71,6 +105,13 @@ int main() {
             bot.global_command_create(dpp::slashcommand("open-accont", "Open a New accont for a user in this server", bot.me.id));
             bot.global_command_create(dpp::slashcommand("bank-info", "Server Bank Info", bot.me.id));
             bot.global_command_create(dpp::slashcommand("account-info", "User Accont Info", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("money-new", "Add a new Money", bot.me.id)
+                .add_option(dpp::command_option(dpp::co_string, "money-id", "A ID to this money", true))
+                .add_option(dpp::command_option(dpp::co_string, "money-symbol", "A symbol for this money", true))
+            );
+            bot.global_command_create(dpp::slashcommand("money-info", "Money Info", bot.me.id)
+                .add_option(dpp::command_option(dpp::co_string, "money-id", "A ID to this money", true))
+            );
         }
     });
 

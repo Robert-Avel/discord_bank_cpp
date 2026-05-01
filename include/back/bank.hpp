@@ -1,6 +1,7 @@
 #pragma once
 #include "accont.hpp"
 #include "bank_status.hpp"
+#include "money.hpp"
 
 class Bank {
     std::string id;
@@ -15,15 +16,12 @@ class Bank {
     std::string getID() const;
     size_t getAccontN() const;
 
+    Status moneyNew(std::string id, std::string symbol);
+    MoneyType* moneyGet(std::string id);
+
     const Account* getAccont(const std::string id);
-
-
     Status deposit(cents value, std::string money_id, std::string money_symbol, std::string to_id);
-
-
     Status pay(cents value, std::string money_id, std::string money_symbol, std::string from_id);
-
-
     Status openAccont(std::string id);
 
     Status transference(
