@@ -8,10 +8,10 @@
 
 
 enum Operation {
-    OPEN_BANK,
-    OPEN_ACCONT,
-    INFO_BANK,
-    INFO_ACCOUNT,
+    OPEN_BANK, //OK
+    OPEN_ACCONT, //OK
+    INFO_BANK, //OK
+    INFO_ACCOUNT, //OK
     CHECK_BALANCE,
     NEW_MONEY,
     INFO_MONEY,
@@ -46,8 +46,21 @@ namespace payload {
         std::string id;
         std::string balances;
     };
-
 }
+
+
+enum PayloadType {
+    PL_TEXT,
+    PL_MONEY_TYPE,
+    PL_MONEY,
+    PL_BALANCE,
+    PL_DEPOSIT,
+    PL_PAY,
+    PL_TRANSFERENCE,
+    PL_BANK,
+    PL_ACCOUNT
+};
+
 
 using PayloadVariant = std::variant<
     std::string,

@@ -32,62 +32,49 @@ int main() {
 
     /* The event is fired when someone issues your commands */
     bot.on_slashcommand([](const dpp::slashcommand_t& event) {
-        if(event.command.get_command_name() == "open-bank") {
+        if(event.command.get_command_name() == "abrir-banco") {
             event.reply(
                 payloadAssembly(
-                    cmd::open_bank(&db, event.command.guild_id.str())                )
+                    cmd::open_bank(&db, event.command.guild_id.str())
+                )
             );
         }
-        else if(event.command.get_command_name() == "open-accont") {
+        else if(event.command.get_command_name() == "abrir-conta") {
             event.reply(
                 payloadAssembly(
                     cmd::open_accont(&db, event.command.guild_id.str(), event.command.usr.id.str())
                 )
             );
         }
-        else if(event.command.get_command_name() == "bank-info") {
+        else if(event.command.get_command_name() == "ver-banco") {
             event.reply(
                 payloadAssembly(
                     cmd::bank_info(&db, event.command.guild_id.str())
                 )
             );
         }
-        else if(event.command.get_command_name() == "account-info") {
+        else if(event.command.get_command_name() == "ver-conta") {
             event.reply(
                 payloadAssembly(
                     cmd::account_info(&db, event.command.guild_id.str(), event.command.usr.id.str())
                 )
             );
         }
-        else if(event.command.get_command_name() == "account-info") {
-            event.reply(
-                payloadAssembly(
-                    cmd::account_info(&db, event.command.guild_id.str(), event.command.usr.id.str())
-                )
-            );
-        }
-        else if(event.command.get_command_name() == "account-info") {
-            event.reply(
-                payloadAssembly(
-                    cmd::account_info(&db, event.command.guild_id.str(), event.command.usr.id.str())
-                )
-            );
-        }
-        else if(event.command.get_command_name() == "money-new") {
+        else if(event.command.get_command_name() == "nova-moeda") {
             event.reply(
                 payloadAssembly(
                     cmd::money_new(&db, event.command.guild_id.str(),
-                        std::get<std::string>(event.get_parameter("money-id")),
-                        std::get<std::string>(event.get_parameter("money-symbol"))
+                        std::get<std::string>(event.get_parameter("id-da-moeda")),
+                        std::get<std::string>(event.get_parameter("simbolo-da-moeda"))
                     )
                 )
             );
         }
-        else if(event.command.get_command_name() == "money-info") {
+        else if(event.command.get_command_name() == "ver-moeda") {
             event.reply(
                 payloadAssembly(
                     cmd::money_info(&db, event.command.guild_id.str(),
-                        std::get<std::string>(event.get_parameter("money-id"))
+                        std::get<std::string>(event.get_parameter("id-da-moeda"))
                     )
                 )
             );
@@ -99,18 +86,20 @@ int main() {
 
     bot.on_ready([&bot](const dpp::ready_t& event) {
 
+
         if (dpp::run_once<struct register_bot_commands>()) {
+            //bot.global_bulk_command_delete();
             /* Create and register a command when the bot is ready */
-            bot.global_command_create(dpp::slashcommand("open-bank", "Open a New bank in this server", bot.me.id));
-            bot.global_command_create(dpp::slashcommand("open-accont", "Open a New accont for a user in this server", bot.me.id));
-            bot.global_command_create(dpp::slashcommand("bank-info", "Server Bank Info", bot.me.id));
-            bot.global_command_create(dpp::slashcommand("account-info", "User Accont Info", bot.me.id));
-            bot.global_command_create(dpp::slashcommand("money-new", "Add a new Money", bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, "money-id", "A ID to this money", true))
-                .add_option(dpp::command_option(dpp::co_string, "money-symbol", "A symbol for this money", true))
+            bot.global_command_create(dpp::slashcommand("abrir-banco", "Abra um novo banco neste servidor.", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("abrir-conta", "Abra uma nova conta neste servidor", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("ver-banco", "Informações do banco", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("ver-conta", "Informações da conta", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("nova-moeda", "Adiciona uma nova moeda", bot.me.id)
+                .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
+                .add_option(dpp::command_option(dpp::co_string, "simbolo-da-moeda", "O Simbolo da moeda", true))
             );
-            bot.global_command_create(dpp::slashcommand("money-info", "Money Info", bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, "money-id", "A ID to this money", true))
+            bot.global_command_create(dpp::slashcommand("ver-moeda", "Informações da Moeda", bot.me.id)
+                .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
             );
         }
     });

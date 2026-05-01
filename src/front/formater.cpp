@@ -11,15 +11,22 @@
 FieldMap FinalPayLoad::formatField(const PayloadVariant& pl) {
     if(std::holds_alternative<std::string>(pl)) {
         auto string = std::get<std::string>(pl);
-        return FieldMap{{"Obs:", string}};
+        return FieldMap{
+            {fields_PT.at(PL_TEXT)[0], string}
+        };
     }
     else if (std::holds_alternative<MoneyType>(pl)) {
         auto mt = std::get<MoneyType>(pl);
-        return FieldMap {{"ID", mt.id}, {"Símbolo", mt.symbol}};
+        return FieldMap {
+            {fields_PT.at(PL_MONEY_TYPE)[0], mt.id},
+            {fields_PT.at(PL_MONEY_TYPE)[1], mt.symbol}
+        };
     }
     else if (std::holds_alternative<Money>(pl)) {
         auto m = std::get<Money>(pl);
-        return FieldMap{{"Saldo", m.format()}};
+        return FieldMap{
+            {fields_PT.at(PL_MONEY)[0], m.format()}
+        };
     }
     else if (std::holds_alternative<std::vector<Money>>(pl)) {
         auto vm = std::get<std::vector<Money>>(pl);
@@ -32,40 +39,40 @@ FieldMap FinalPayLoad::formatField(const PayloadVariant& pl) {
     else if (std::holds_alternative<payload::Deposit>(pl)) {
         auto d = std::get<payload::Deposit>(pl);
         return FieldMap{
-            {"Moeda", d.mt_.id},
-            {"Valor", std::to_string(d.value)},
-            {"Destinatário", d.to_id}
+            {fields_PT.at(PL_DEPOSIT)[0], d.mt_.id},
+            {fields_PT.at(PL_DEPOSIT)[1], std::to_string(d.value)},
+            {fields_PT.at(PL_DEPOSIT)[2], d.to_id}
         };
     }
     else if (std::holds_alternative<payload::Pay>(pl)) {
         auto p = std::get<payload::Pay>(pl);
         return FieldMap{
-            {"Moeda", p.mt_.id},
-            {"Valor", std::to_string(p.value)},
-            {"Remetente", p.from_id}
+            {fields_PT.at(PL_PAY)[0], p.mt_.id},
+            {fields_PT.at(PL_PAY)[1], std::to_string(p.value)},
+            {fields_PT.at(PL_PAY)[2], p.from_id}
         };
     }
     else if (std::holds_alternative<payload::Trasference>(pl)) {
         auto p = std::get<payload::Trasference>(pl);
         return FieldMap{
-            {"Moeda", p.mt_.id},
-            {"Valor", std::to_string(p.value)},
-            {"Remetente", p.from_id},
-            {"Destinatário", p.to_id}
+            {fields_PT.at(PL_TRANSFERENCE)[0], p.mt_.id},
+            {fields_PT.at(PL_TRANSFERENCE)[1], std::to_string(p.value)},
+            {fields_PT.at(PL_TRANSFERENCE)[2], p.from_id},
+            {fields_PT.at(PL_TRANSFERENCE)[3], p.to_id}
         };
     }
     else if (std::holds_alternative<payload::Bank>(pl)) {
         auto p = std::get<payload::Bank>(pl);
         return FieldMap{
-            {"ID", p.id},
-            {"Nº Contas", std::to_string(p.accountN)}
+            {fields_PT.at(PL_BANK)[0], p.id},
+            {fields_PT.at(PL_BANK)[1], std::to_string(p.accountN)}
         };
     }
     else if (std::holds_alternative<payload::Account>(pl)) {
         auto p = std::get<payload::Account>(pl);
         return FieldMap{
-            {"ID", p.id},
-            {"Saldo(s)", p.balances}
+            {fields_PT.at(PL_ACCOUNT)[0], p.id},
+            {fields_PT.at(PL_ACCOUNT)[1], p.balances}
         };
     }
     else {

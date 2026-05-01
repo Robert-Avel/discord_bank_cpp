@@ -1,8 +1,24 @@
 #include "bank_status.hpp"
 #include "base_payload.hpp"
 #include <map>
+#include <vector>
 
 using MsgKey = std::pair<Operation, Status>;
+
+
+const std::map<PayloadType, std::vector<std::string>>
+fields_PT = {
+    {PL_TEXT, {"Obs:"}},
+    {PL_MONEY_TYPE, {"ID", "Símbolo"}},
+    {PL_MONEY, {"Saldo"}},
+    {PL_BALANCE, {}},
+    {PL_DEPOSIT, {"Moeda", "Valor", "Destinatário"}},
+    {PL_PAY, {"Moeda", "Valor", "Remetente"}},
+    {PL_TRANSFERENCE, {"Moeda", "Valor", "Remetente","Destinatário"}},
+    {PL_BANK, {"ID", "Nº Contas"}},
+    {PL_ACCOUNT, {"ID", "Saldo(s)"}},
+};
+
 
 const std::map<Operation, std::string>
 operation_PT = {
