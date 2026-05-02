@@ -103,3 +103,30 @@ FinalPayLoad cmd::money_info(CentralBank* cb, std::string bank_id, std::string m
     }
     return FinalPayLoad({op, SUCCESS, *mt});
 }
+
+
+FinalPayLoad cmd::deposit(CentralBank* cb, std::string bank_id, std::string user_id, std::string money_id, cents value) {
+    Operation op = DEPOSIT;
+    std::stringstream buffer;
+
+    Bank* b = cb->getBank(bank_id);
+    if (b == nullptr) {
+        buffer << "Bank: " << bank_id;
+        return FinalPayLoad({op, NOT_FOUND, buffer.str()});
+    }
+    MoneyType* mt = b->moneyGet(money_id);
+    if(mt == nullptr) {
+        buffer << "Money: " << money_id;
+        return FinalPayLoad({op, NOT_FOUND, buffer.str()});
+    }
+    const Account* a = b->getAccont(user_id);
+    if (a == nullptr) {
+        buffer << "Account: " << user_id;
+        return FinalPayLoad({op, NOT_FOUND, buffer.str()});
+    }
+
+    b->deposit(value, mt->id, mt->symbol, user_id);
+    return FinalPayLoad({
+        op, SUCCESS, payload::Deposit{value, *mt, user_id}
+    });
+}

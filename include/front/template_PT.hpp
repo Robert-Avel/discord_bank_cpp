@@ -81,12 +81,12 @@ messages_PT = {
     // --- PAYMENT ---
     {{PAYMENT, Status::SUCCESS},              "💸 Pagamento processado! O destinatário já recebeu os fundos."},
     {{PAYMENT, Status::NOT_ENOUGH_BALANCE},   "📉 Saldo insuficiente para realizar este pagamento."},
-    {{PAYMENT, Status::NOT_FOUND},            "👤 Destinatário não encontrado no sistema."},
+    {{PAYMENT, Status::NOT_FOUND},            "👤 Destinatário não encontrado no sistema ou o banco nâo existe."},
 
     // --- DEPOSIT ---
     {{DEPOSIT, Status::SUCCESS},              "📥 Depósito confirmado! O valor foi adicionado ao seu saldo seguro."},
     {{DEPOSIT, Status::NOT_ENOUGH_BALANCE},   "❌ Você não possui essa quantia em mãos para depositar."},
-    {{DEPOSIT, Status::NOT_FOUND},            "🚫 Conta de destino inexistente."},
+    {{DEPOSIT, Status::NOT_FOUND},            "🚫 Conta de destino inexistente ou o banco nâo existe."},
 
     // --- TRANSFERENCE ---
     {{TRANSFERENCE, Status::SUCCESS},         "📲 Transferência realizada com sucesso entre contas."},

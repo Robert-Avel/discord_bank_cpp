@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <cstdlib>
 #include <dpp/appcommand.h>
 #include <dpp/dispatcher.h>
@@ -5,6 +6,7 @@
 #include <dpp/intents.h>
 #include <dpp/message.h>
 #include <dpp/once.h>
+#include <dpp/snowflake.h>
 #include "sysbank.hpp"
 #include "interface.hpp"
 
@@ -79,6 +81,20 @@ int main() {
                 )
             );
         }
+        else if(event.command.get_command_name() == "depositar") {
+            int64_t value = std::get<int64_t>(event.get_parameter("valor"));
+            if (value < 1) {event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));}
+
+            event.reply(
+                payloadAssembly(
+                    cmd::deposit(&db, event.command.guild_id.str(),
+                        std::get<dpp::snowflake>(event.get_parameter("id-destinatario")).str(),
+                        std::get<std::string>(event.get_parameter("id-da-moeda")),
+                        value
+                    )
+                )
+            );
+        }
         else {
             event.reply("Erro ao executar o comando, talvez ele não exista ou seja um fantasma");
         }
@@ -89,7 +105,6 @@ int main() {
 
         if (dpp::run_once<struct register_bot_commands>()) {
             //bot.global_bulk_command_delete();
-            /* Create and register a command when the bot is ready */
             bot.global_command_create(dpp::slashcommand("abrir-banco", "Abra um novo banco neste servidor.", bot.me.id));
             bot.global_command_create(dpp::slashcommand("abrir-conta", "Abra uma nova conta neste servidor", bot.me.id));
             bot.global_command_create(dpp::slashcommand("ver-banco", "Informações do banco", bot.me.id));
@@ -100,6 +115,11 @@ int main() {
             );
             bot.global_command_create(dpp::slashcommand("ver-moeda", "Informações da Moeda", bot.me.id)
                 .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
+            );
+            bot.global_command_create(dpp::slashcommand("depositar", "Deposita um valor na conta do usuário", bot.me.id)
+                .add_option(dpp::command_option(dpp::co_user, "id-destinatario", "identificador de quem vai receber", true))
+                .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
+                .add_option(dpp::command_option(dpp::co_integer, "valor", "valor da transação", true))
             );
         }
     });
