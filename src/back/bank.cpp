@@ -15,6 +15,8 @@ Bank::Bank(std::string id) {this->id = id;}
 
 std::string Bank::getID() const {return id;}
 size_t Bank::getAccontN() const {return acconts.size();}
+const std::vector<Account> Bank::getAccounts() const {return acconts;}
+const std::vector<MoneyType> Bank::getWhiteListMoney() const {return white_list_money;}
 
 const Account* Bank::getAccont(const std::string id) {
     return _getAccont(id);
@@ -50,6 +52,15 @@ Status Bank::openAccont(std::string id) {
     }
     return ALREADY_EXIST;
 }
+
+
+Status Bank::loadAccount(const Account& a) {
+    if(a.getID().empty()) {return FAILURE;}
+    this->acconts.push_back(a);
+    return SUCCESS;
+}
+
+
 
 Status Bank::transference(
     cents value,

@@ -15,6 +15,8 @@ class Bank {
 
     std::string getID() const;
     size_t getAccontN() const;
+    const std::vector<Account> getAccounts() const;
+    const std::vector<MoneyType> getWhiteListMoney() const;
 
     Status moneyNew(std::string id, std::string symbol);
     MoneyType* moneyGet(std::string id);
@@ -23,6 +25,7 @@ class Bank {
     Status deposit(cents value, std::string money_id, std::string money_symbol, std::string to_id);
     Status pay(cents value, std::string money_id, std::string money_symbol, std::string from_id);
     Status openAccont(std::string id);
+    Status loadAccount(const Account& a);
 
     Status transference(
         cents value,

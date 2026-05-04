@@ -1,4 +1,5 @@
 *.sh
+*.cb
 test
 main
 test.cpp

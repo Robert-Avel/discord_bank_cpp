@@ -14,6 +14,7 @@ class Account {
 
     std::string getID() const;
     std::string formatBalance() const;
+    const std::vector<Money> getBalances() const;
 
     const cents getBalance(std::string money_id);
     void addMoney(std::string id, std::string symbol, cents value);

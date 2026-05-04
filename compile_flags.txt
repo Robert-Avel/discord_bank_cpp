@@ -1,15 +1,14 @@
 -Wall
 -I./include/back
 -I./include/front
-main.cpp
 
 ./src/back/accont.cpp
 ./src/back/bank.cpp
 ./src/back/money.cpp
 ./src/back/sysbank.cpp
+./src/back/saver.cpp
 
 ./src/front/formater.cpp
 ./src/front/interface.cpp
 
--o bot
 -Wl,-rpath=/usr/local/lib

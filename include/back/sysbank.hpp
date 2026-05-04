@@ -2,10 +2,14 @@
 #include "bank.hpp"
 
 class CentralBank {
+    std::string data_file_name;
+
     std::vector<Bank> banks;
 
     public:
-    CentralBank();
+    CentralBank(std::string data_file_name);
+    ~CentralBank();
+
 
     Bank* getBank(std::string id);
     Status openBank(std::string id);

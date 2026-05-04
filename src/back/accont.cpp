@@ -20,6 +20,9 @@ Account::Account(std::string id_): balances() {
 
 std::string Account::getID() const {return id;}
 
+const std::vector<Money> Account::getBalances() const {return balances;}
+
+
 const cents Account::getBalance(std::string money_id) {
     Money* money = _getMoney(money_id);
     if (money == nullptr) {return 0;}
