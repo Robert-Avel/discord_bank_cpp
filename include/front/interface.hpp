@@ -14,4 +14,7 @@ namespace cmd
     FinalPayLoad money_new(CentralBank* cb, std::string bank_id, std::string money_id, std::string money_symbol);
     FinalPayLoad money_info(CentralBank* cb, std::string bank_id, std::string money_id);
     FinalPayLoad deposit(CentralBank* cb, std::string bank_id, std::string user_id, std::string money_id, cents value);
+    FinalPayLoad pay(CentralBank* cb, std::string bank_id, cents value, std::string money_id, std::string from_id);
+    FinalPayLoad transference(CentralBank* cb, std::string bank_id, cents value, std::string money_id, std::string from_id, std::string to_id);
+
 };

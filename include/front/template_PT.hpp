@@ -40,7 +40,13 @@ status_PT = {
     {Status::SUCCESS, "Sucesso"},
     {Status::NOT_FOUND, "Não Encontrado"},
     {Status::ALREADY_EXIST, "Já Existe"},
-    {Status::NOT_ENOUGH_BALANCE, "Saldo Insuficiente"}
+    {Status::NOT_ENOUGH_BALANCE, "Saldo Insuficiente"},
+    {Status::FAILURE, "Falha Crítica"},
+    {Status::MONEY_NOT_FOUND,"Moeda não encontrada"},
+    {Status::ACCOUNT_NOT_FOUND,"Conta não encontrada"},
+    {Status::BANK_NOT_FOUND,"Banco não encontrado"},
+    {Status::RECIEVER_NOT_FOUND,"O Recebedor não foi encontrado"},
+    {Status::PAYER_NOT_FOUND, "O Pagador não foi encontrado"}
 };
 
 
@@ -53,43 +59,49 @@ messages_PT = {
     // --- OPEN_ACCONT ---
     {{OPEN_ACCONT, Status::SUCCESS},          "✅ Sua conta foi aberta! Bem-vindo ao sistema financeiro."},
     {{OPEN_ACCONT, Status::ALREADY_EXIST},    "🆔 Você já possui uma conta ativa em nosso banco."},
-    {{OPEN_ACCONT, Status::NOT_FOUND},        "🚫 Não foi possível criar sua conta: Banco não encontrado."},
+    {{OPEN_ACCONT, Status::BANK_NOT_FOUND},   "🚫 Não foi possível criar sua conta: Banco não encontrado."},
 
 
     // --- INFO_BANK ---
     {{INFO_BANK, Status::SUCCESS},            "📄Infomações do Banco"},
-    {{INFO_BANK, Status::NOT_FOUND},          "🚫Banco não encontrado"},
+    {{INFO_BANK, Status::BANK_NOT_FOUND},     "🚫Banco não encontrado"},
 
 
     // --- INFO_ACCOUNT ---
-    {{INFO_ACCOUNT, Status::SUCCESS},        "📄Infomações da Conta"},
-    {{INFO_ACCOUNT, Status::NOT_FOUND},      "🚫Banco ou Conta não encontrado"},
+    {{INFO_ACCOUNT, Status::SUCCESS},             "📄Infomações da Conta"},
+    {{INFO_ACCOUNT, Status::BANK_NOT_FOUND},      "🚫Banco não encontrado"},
+    {{INFO_ACCOUNT, Status::ACCOUNT_NOT_FOUND},   "🚫Conta não encontrado"},
 
-    // --- CHECK_BALANCE ---
-    {{CHECK_BALANCE, Status::SUCCESS},        "💰 Extrato gerado com sucesso. Confira seus valores abaixo."},
-    {{CHECK_BALANCE, Status::NOT_FOUND},      "🚫 Você ainda não possui uma conta. Use 'Abrir Conta' primeiro."},
 
     // --- NEW_COIN ---
     {{NEW_MONEY, Status::SUCCESS},             "🪙 Uma nova moeda foi registrada na economia do servidor."},
     {{NEW_MONEY, Status::ALREADY_EXIST},       "⚠️ Essa moeda já existe ou possui um símbolo duplicado."},
-    {{NEW_MONEY, Status::NOT_FOUND},           "❌ Erro: Autoridade bancária não encontrada para criar moedas."},
+    {{NEW_MONEY, Status::BANK_NOT_FOUND},      "🚫 Erro: Autoridade bancária não encontrada para criar moedas."},
+
 
     {{INFO_MONEY, Status::SUCCESS},             "🪙 Informação da Moeda"},
-    {{INFO_MONEY, Status::NOT_FOUND},           "🚫 Moeda não encontrada ou o Banco nâo foi aberto neste servidor"},
+    {{INFO_MONEY, Status::BANK_NOT_FOUND},      "🚫 O Banco nâo foi aberto neste servidor"},
+    {{INFO_MONEY, Status::MONEY_NOT_FOUND},     "🚫 Moeda não encontrada"},
 
 
     // --- PAYMENT ---
     {{PAYMENT, Status::SUCCESS},              "💸 Pagamento processado! O destinatário já recebeu os fundos."},
-    {{PAYMENT, Status::NOT_ENOUGH_BALANCE},   "📉 Saldo insuficiente para realizar este pagamento."},
-    {{PAYMENT, Status::NOT_FOUND},            "👤 Destinatário não encontrado no sistema ou o banco nâo existe."},
+    {{PAYMENT, Status::NOT_ENOUGH_BALANCE},   "⚠️ Saldo insuficiente para realizar este pagamento."},
+    {{PAYMENT, Status::BANK_NOT_FOUND},       "🚫 O Banco nâo foi aberto neste servidor"},
+    {{PAYMENT, Status::ACCOUNT_NOT_FOUND},    "🚫 Conta do Pagador não encontrado no sistema."},
+    {{PAYMENT, Status::MONEY_NOT_FOUND},      "🚫 A Moeda utilizada na transação é Inválida."},
 
     // --- DEPOSIT ---
     {{DEPOSIT, Status::SUCCESS},              "📥 Depósito confirmado! O valor foi adicionado ao seu saldo seguro."},
-    {{DEPOSIT, Status::NOT_ENOUGH_BALANCE},   "❌ Você não possui essa quantia em mãos para depositar."},
-    {{DEPOSIT, Status::NOT_FOUND},            "🚫 Conta de destino inexistente ou o banco nâo existe."},
+    {{DEPOSIT, Status::ACCOUNT_NOT_FOUND},    "🚫 Conta de destino inexistente ou nâo foi encontada"},
+    {{DEPOSIT, Status::MONEY_NOT_FOUND},      "🚫 Moeda não encontrada"},
+    {{DEPOSIT, Status::BANK_NOT_FOUND},       "🚫 O Banco nâo foi aberto neste servidor"},
 
     // --- TRANSFERENCE ---
-    {{TRANSFERENCE, Status::SUCCESS},         "📲 Transferência realizada com sucesso entre contas."},
-    {{TRANSFERENCE, Status::NOT_ENOUGH_BALANCE},"⚠️ Saldo insuficiente para completar a transferência."},
-    {{TRANSFERENCE, Status::NOT_FOUND},       "🔍 Uma das contas envolvidas na transação não foi localizada."}
+    {{TRANSFERENCE, Status::SUCCESS},               "📲 Transferência realizada com sucesso entre contas."},
+    {{TRANSFERENCE, Status::NOT_ENOUGH_BALANCE},    "⚠️ Saldo insuficiente para completar a transferência."},
+    {{TRANSFERENCE, Status::BANK_NOT_FOUND},        "🚫 O Banco nâo foi aberto neste servidor"},
+    {{TRANSFERENCE, Status::RECIEVER_NOT_FOUND},    "🚫 Conta de destino inexistente ou nâo foi encontada"},
+    {{TRANSFERENCE, Status::PAYER_NOT_FOUND},       "🚫 Conta do Pagador não encontrado no sistema."},
+    {{TRANSFERENCE, Status::MONEY_NOT_FOUND},       "🚫 Moeda não encontrada"}
 };

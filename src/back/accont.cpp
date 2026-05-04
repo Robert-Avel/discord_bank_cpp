@@ -1,4 +1,5 @@
 #include "accont.hpp"
+#include "bank_status.hpp"
 #include "money.hpp"
 #include <algorithm>
 #include <sstream>
@@ -13,6 +14,12 @@ Money* Account::_getMoney(std::string money_id) {
     }
     return nullptr;
 }
+
+
+const Money* Account::getMoney(std::string money_id) {
+    return this->_getMoney(money_id);
+}
+
 
 Account::Account(std::string id_): balances() {
     this->id = id_;
@@ -40,10 +47,10 @@ void Account::addMoney(std::string id, std::string symbol, cents value) {
     }
 }
 
-bool Account::removeMoney(std::string id, cents value) {
+Status Account::removeMoney(std::string id, cents value) {
     auto balance = _getMoney(id);
     if (balance == nullptr) {
-        return false;
+        return MONEY_NOT_FOUND;
     }
 
     if (balance->value > value) {
@@ -57,9 +64,9 @@ bool Account::removeMoney(std::string id, cents value) {
 
         balances.erase(remove);
     }
-    else {return false;}
+    else {return NOT_ENOUGH_BALANCE;}
 
-    return true;
+    return SUCCESS;
 }
 
 
