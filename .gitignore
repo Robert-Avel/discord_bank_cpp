@@ -1,5 +1,6 @@
 *.sh
 *.cb
+*.bin
 test
 main
 test.cpp

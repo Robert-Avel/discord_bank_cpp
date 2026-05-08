@@ -9,6 +9,7 @@
 #include <ios>
 
 CentralBank::CentralBank(std::string data_file_name) {
+    if (data_file_name.empty()) {return;}
     this->data_file_name = data_file_name;
 
     std::ifstream saver;
@@ -24,7 +25,9 @@ CentralBank::CentralBank(std::string data_file_name) {
 }
 
 
-CentralBank::~CentralBank() {
+void CentralBank::save() {
+    if (data_file_name.empty()) {return;}
+
     std::ofstream saver;
     saver.open(data_file_name, std::ios::out | std::ios::binary | std::ios::trunc);
     if(!saver) {return;}
@@ -84,7 +87,7 @@ Status CentralBank::pay(
     Account* payer = b->getAccont(from_id);
     if(payer == nullptr) {return ACCOUNT_NOT_FOUND;}
 
-    return b->pay(*payer, value, money_id);
+    return b->pay(payer, value, money_id);
 }
 
 Status CentralBank::deposit(
@@ -99,7 +102,7 @@ Status CentralBank::deposit(
     Account* receiver = b->getAccont(to_id);
     if(receiver == nullptr) {return ACCOUNT_NOT_FOUND;}
 
-    return b->depositWhiteList(*receiver, value, money_id);
+    return b->depositWhiteList(receiver, value, money_id);
 }
 
 Status CentralBank::transference(
@@ -120,5 +123,5 @@ Status CentralBank::transference(
 
     const Money* m = payer->getMoney(money_id);
 
-    return b->transference(*payer, *receiver, value, m->_mt.id, m->_mt.symbol);
+    return b->transference(payer, receiver, value, m->_mt.id, m->_mt.symbol);
 }

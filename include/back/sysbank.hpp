@@ -4,13 +4,13 @@
 #include <string>
 
 class CentralBank {
-    std::string data_file_name;
-
     std::vector<Bank> banks;
 
     public:
+    std::string data_file_name;
     CentralBank(std::string data_file_name);
-    ~CentralBank();
+
+    void save();
 
     //Getters
     Bank* getBank(std::string id);

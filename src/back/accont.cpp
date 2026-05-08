@@ -48,7 +48,7 @@ void Account::addMoney(std::string id, std::string symbol, cents value) {
 }
 
 Status Account::removeMoney(std::string id, cents value) {
-    auto balance = _getMoney(id);
+    Money* balance = _getMoney(id);
     if (balance == nullptr) {
         return MONEY_NOT_FOUND;
     }

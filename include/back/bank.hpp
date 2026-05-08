@@ -29,12 +29,12 @@ class Bank {
     //Operação de Conta
     Status openAccont(std::string id);
 
-    Status deposit(Account& to, cents value, std::string money_id, std::string money_symbol);
-    Status depositWhiteList(Account& to, cents value, std::string money_id);
-    Status pay(Account& from, cents value, std::string money_id);
+    Status deposit(Account* to, cents value, std::string money_id, std::string money_symbol);
+    Status depositWhiteList(Account* to, cents value, std::string money_id);
+    Status pay(Account* from, cents value, std::string money_id);
     Status transference(
-        Account& from,
-        Account& to,
+        Account* from,
+        Account* to,
         cents value,
         std::string money_id,
         std::string money_symbol

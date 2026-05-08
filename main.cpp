@@ -9,7 +9,12 @@
 #include <dpp/snowflake.h>
 #include "sysbank.hpp"
 #include "interface.hpp"
+#include <ctime>
+#define SAVE_BREAK 1800
 
+
+static CentralBank db("bank.bin");
+static std::time_t last_saved = 0;
 
 dpp::embed payloadAssembly(const FinalPayLoad& pl) {
     dpp::embed buffer;
@@ -25,9 +30,6 @@ dpp::embed payloadAssembly(const FinalPayLoad& pl) {
 
 
 int main() {
-    static CentralBank db("bank.bin");
-
-
     std::string token = getenv("BOT_TOKEN");
     /* Setup the bot */
     dpp::cluster bot(token, dpp::i_default_intents | dpp::i_message_content);
@@ -106,7 +108,7 @@ int main() {
                     cmd::pay(&db, event.command.guild_id.str(),
                         value,
                         std::get<std::string>(event.get_parameter("id-da-moeda")),
-                        std::get<dpp::snowflake>(event.get_parameter("id-usuário")).str()
+                        event.command.usr.id.str()
                     )
                 )
             );
@@ -120,7 +122,7 @@ int main() {
                     cmd::transference(&db, event.command.guild_id.str(),
                         value,
                         std::get<std::string>(event.get_parameter("id-da-moeda")),
-                        std::get<dpp::snowflake>(event.get_parameter("id-usuário")).str(),
+                        event.command.usr.id.str(),
                         std::get<dpp::snowflake>(event.get_parameter("id-destinatario")).str()
                     )
                 )
@@ -128,6 +130,12 @@ int main() {
         }
         else {
             event.reply("Erro ao executar o comando, talvez ele não exista ou seja um fantasma");
+        }
+
+        if(last_saved == 0 || std::difftime(std::time(NULL), last_saved) > SAVE_BREAK) {
+            db.save();
+            std::cout << "Saved in " << db.data_file_name << "\n";
+            last_saved = std::time(NULL);
         }
     });
 
@@ -152,13 +160,11 @@ int main() {
                 .add_option(dpp::command_option(dpp::co_integer, "valor", "valor da transação", true))
             );
             bot.global_command_create(dpp::slashcommand("sacar", "Saca um valor", bot.me.id)
-                .add_option(dpp::command_option(dpp::co_user, "id-usuário", "identificador de quem vai sacar", true))
                 .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
                 .add_option(dpp::command_option(dpp::co_integer, "valor", "valor da transação", true))
             );
             bot.global_command_create(dpp::slashcommand("transferir", "Trasfere um valor para um usuário", bot.me.id)
                 .add_option(dpp::command_option(dpp::co_user, "id-destinatario", "identificador de quem vai receber", true))
-                .add_option(dpp::command_option(dpp::co_user, "id-usuário", "identificador de quem vai pagar", true))
                 .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
                 .add_option(dpp::command_option(dpp::co_integer, "valor", "valor da transação", true))
             );
