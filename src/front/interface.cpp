@@ -100,69 +100,88 @@ FinalPayLoad cmd::money_info(CentralBank* cb, std::string bank_id, std::string m
 }
 
 
-FinalPayLoad cmd::deposit(CentralBank* cb, std::string bank_id, std::string user_id, std::string money_id, cents value) {
+FinalPayLoad cmd::deposit(CentralBank* cb, std::string bank_id, std::string to_id, std::string money_id, cents value) {
     Operation op = DEPOSIT;
-    Status result = cb->deposit(bank_id, value, money_id, user_id);
-    MoneyType* money_t;
 
-    switch (result) {
-        case BANK_NOT_FOUND:
-            return FinalPayLoad({op, BANK_NOT_FOUND, bank_id});
-        case ACCOUNT_NOT_FOUND:
-            return FinalPayLoad({op, ACCOUNT_NOT_FOUND, user_id});
-        case MONEY_NOT_FOUND:
-            return FinalPayLoad({op, MONEY_NOT_FOUND, money_id});
-        case SUCCESS:
-            money_t = cb->getBank(bank_id)->getMoney(money_id);
-            return FinalPayLoad({op, SUCCESS, payload::Deposit{value, *money_t, user_id}});
-        default:
-            throw std::exception();
+    Bank* b = cb->getBank(bank_id);
+    if(b == nullptr) {
+        return FinalPayLoad({op, BANK_NOT_FOUND, bank_id});
+    }
+
+    Account* to = b->getAccont(to_id);
+    if(to == nullptr) {
+        return FinalPayLoad({op, PAYER_NOT_FOUND, to_id});
+    }
+
+    MoneyType* money = b->getMoney(money_id);
+    if(money == nullptr) {
+        return FinalPayLoad({op, MONEY_NOT_FOUND, money_id});
+    }
+
+    Status result = b->depositWhiteList(to, value, money->id);
+
+    if(result == SUCCESS) {
+        return FinalPayLoad({op, SUCCESS, payload::Deposit{value, *money, to_id}});
+    } else {
+        return FinalPayLoad({op, FAILURE, "Critical"});
     }
 }
 
 
 FinalPayLoad cmd::pay(CentralBank* cb, std::string bank_id, cents value, std::string money_id, std::string from_id) {
     Operation op = PAYMENT;
-    Status result = cb->pay(bank_id, value, money_id, from_id);
 
-    MoneyType* money_t;
+    Bank* b = cb->getBank(bank_id);
+    if(b == nullptr) {
+        return FinalPayLoad({op, BANK_NOT_FOUND, bank_id});
+    }
+    Account* from = b->getAccont(from_id);
+    if(from == nullptr) {
+        return FinalPayLoad({op, PAYER_NOT_FOUND, from_id});
+    }
 
-    switch (result) {
-        case BANK_NOT_FOUND:
-            return FinalPayLoad({op, BANK_NOT_FOUND, bank_id});
-        case ACCOUNT_NOT_FOUND:
-            return FinalPayLoad({op, ACCOUNT_NOT_FOUND, from_id});
-        case MONEY_NOT_FOUND:
-            return FinalPayLoad({op, MONEY_NOT_FOUND, money_id});
-        case NOT_ENOUGH_BALANCE:
-            return FinalPayLoad({op, NOT_ENOUGH_BALANCE, std::to_string(value)});
-        case SUCCESS:
-            money_t = cb->getBank(bank_id)->getMoney(money_id);
-            return FinalPayLoad({op, SUCCESS, payload::Pay{value, *money_t, from_id}});
-        default:
-            throw std::exception();
+    MoneyType* money = b->getMoney(money_id);
+    if(money == nullptr) {
+        return FinalPayLoad({op, MONEY_NOT_FOUND, money_id});
+    }
+
+    Status result = b->pay(from, value, money->id);
+    if(result == NOT_ENOUGH_BALANCE) {
+        return FinalPayLoad({op, NOT_ENOUGH_BALANCE, std::to_string(value)});
+    } else if(result == SUCCESS) {
+        return FinalPayLoad({op, SUCCESS, payload::Pay{value, *money, from_id}});
+    } else {
+        return FinalPayLoad({op, FAILURE, "Critical"});
     }
 }
 FinalPayLoad cmd::transference(CentralBank* cb, std::string bank_id, cents value, std::string money_id, std::string from_id, std::string to_id) {
     Operation op = TRANSFERENCE;
-    Status result = cb->transference(bank_id, value, money_id, from_id, to_id);
-    MoneyType* money_t;
 
-    switch (result) {
-        case BANK_NOT_FOUND:
-            return FinalPayLoad({op, BANK_NOT_FOUND, bank_id});
-        case PAYER_NOT_FOUND:
-            return FinalPayLoad({op, PAYER_NOT_FOUND, from_id});
-        case RECIEVER_NOT_FOUND:
-            return FinalPayLoad({op, RECIEVER_NOT_FOUND, to_id});
-        case MONEY_NOT_FOUND:
-            return FinalPayLoad({op, MONEY_NOT_FOUND, money_id});
-        case NOT_ENOUGH_BALANCE:
-            return FinalPayLoad({op, NOT_ENOUGH_BALANCE, std::to_string(value)});
-        case SUCCESS:
-            money_t = cb->getBank(bank_id)->getMoney(money_id);
-            return FinalPayLoad({op, SUCCESS, payload::Trasference{value, *money_t, from_id, to_id}});
-        default:
-            throw std::exception();
+    Bank* b = cb->getBank(bank_id);
+    if(b == nullptr) {
+        return FinalPayLoad({op, BANK_NOT_FOUND, bank_id});
+    }
+    Account* from = b->getAccont(from_id);
+    if(from == nullptr) {
+        return FinalPayLoad({op, PAYER_NOT_FOUND, from_id});
+    }
+
+    Account* to= b->getAccont(to_id);
+    if(to == nullptr) {
+        return FinalPayLoad({op, RECIEVER_NOT_FOUND, to_id});
+    }
+
+    MoneyType* money = b->getMoney(money_id);
+    if(money == nullptr) {
+        return FinalPayLoad({op, MONEY_NOT_FOUND, money_id});
+    }
+
+    Status result = b->transference(from, to, value, money->id, money->symbol);
+    if(result == NOT_ENOUGH_BALANCE) {
+        return FinalPayLoad({op, NOT_ENOUGH_BALANCE, std::to_string(value)});
+    } else if(result == SUCCESS) {
+        return FinalPayLoad({op, SUCCESS, payload::Trasference{value, *money, from_id, to_id}});
+    } else {
+        return FinalPayLoad({op, FAILURE, "Critical"});
     }
 }

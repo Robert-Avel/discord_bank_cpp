@@ -1,0 +1,62 @@
+#pragma once
+#include "bank_status.hpp"
+#include "client_user.hpp"
+#include <vector>
+
+
+/*
+ * A Class that manage many clients of banks
+ */
+class ClientManager {
+    std::vector<ClientUser> clients;
+
+    /*
+     * @brief Support Private functions to get non-const ClientUser
+     *
+     * @param id: the ID of client
+     *
+     * @return A pointer to the Client User, or nullptr if not found
+     */
+    ClientUser* _getClient(const std::string& id);
+
+    public:
+    ClientManager() = default;
+
+    /*
+     * @brief Directy Load a ClientUser object
+     */
+    Status loadClient(const ClientUser& c);
+
+    /*
+     * @brief Create a new Client for Manager
+     *
+     * @param bank_id: Defines the bank ID of which the account belong to
+     * @param global_name: Defines the global name used in interface
+     * @param user_id: Unique ID for internal identification
+     *
+     * @returns the Status of Operation (SUCESS || ALREADY_EXIST)
+     */
+    Status newClient(const std::string& bank_id, const std::string& global_name, const  std::string& id) {
+        auto c = ClientUser(bank_id, global_name, id);
+        return loadClient(c);
+    }
+
+
+    /*
+     * @brief Get a client from the ID
+     *
+     * @param id: the ID of client
+     *
+     * @return A pointer to the Client User, or nullptr if not found
+     */
+    const ClientUser* getClient(const std::string& id) const;
+
+    /*
+     * @brief Remove a client from the ID
+     *
+     * @param id: the ID of client
+     *
+     * @return Status of operation (SUCESS || NOT_FOUND)
+     */
+    Status removeClient(const std::string& id);
+};

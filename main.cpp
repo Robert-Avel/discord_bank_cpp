@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <dpp/appcommand.h>
@@ -10,11 +11,22 @@
 #include "sysbank.hpp"
 #include "interface.hpp"
 #include <ctime>
+#include <sstream>
 #define SAVE_BREAK 1800
 
 
 static CentralBank db("bank.bin");
 static std::time_t last_saved = 0;
+
+
+std::string formatMention(dpp::snowflake* id, size_t qnt) {
+    std::stringstream buffer;
+    for(int i = 0; i < qnt; i++) {
+        buffer << "<@" << id->str() << "> ";
+    }
+    return buffer.str();
+}
+
 
 dpp::embed payloadAssembly(const FinalPayLoad& pl) {
     dpp::embed buffer;
@@ -87,13 +99,15 @@ int main() {
         }
         else if(event.command.get_command_name() == "depositar") {
             int64_t value = std::get<int64_t>(event.get_parameter("valor"));
-            if (value < 1) {event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));}
+            if (value < 1) {
+                event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
+                return;
+            }
 
             event.reply(
                 payloadAssembly(
                     cmd::deposit(&db, event.command.guild_id.str(),
-                        std::get<dpp::snowflake>(event.get_parameter("id-destinatario")).str(),
-                        std::get<std::string>(event.get_parameter("id-da-moeda")),
+                        std::get<dpp::snowflake>(event.get_parameter("id-destinatario")).str(),                        std::get<std::string>(event.get_parameter("id-da-moeda")),
                         value
                     )
                 )
@@ -101,8 +115,10 @@ int main() {
         }
         else if(event.command.get_command_name() == "sacar") {
             int64_t value = std::get<int64_t>(event.get_parameter("valor"));
-            if (value < 1) {event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));}
-
+            if (value < 1) {
+                event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
+                return;
+            }
             event.reply(
                 payloadAssembly(
                     cmd::pay(&db, event.command.guild_id.str(),
@@ -115,8 +131,10 @@ int main() {
         }
         else if(event.command.get_command_name() == "transferir") {
             int64_t value = std::get<int64_t>(event.get_parameter("valor"));
-            if (value < 1) {event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));}
-
+            if (value < 1) {
+                event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
+                return;
+            }
             event.reply(
                 payloadAssembly(
                     cmd::transference(&db, event.command.guild_id.str(),

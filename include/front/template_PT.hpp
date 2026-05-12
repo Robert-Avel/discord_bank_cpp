@@ -103,5 +103,6 @@ messages_PT = {
     {{TRANSFERENCE, Status::BANK_NOT_FOUND},        "🚫 O Banco nâo foi aberto neste servidor"},
     {{TRANSFERENCE, Status::RECIEVER_NOT_FOUND},    "🚫 Conta de destino inexistente ou nâo foi encontada"},
     {{TRANSFERENCE, Status::PAYER_NOT_FOUND},       "🚫 Conta do Pagador não encontrado no sistema."},
-    {{TRANSFERENCE, Status::MONEY_NOT_FOUND},       "🚫 Moeda não encontrada"}
+    {{TRANSFERENCE, Status::MONEY_NOT_FOUND},       "🚫 Moeda não encontrada"},
+    {{TRANSFERENCE, Status::FAILURE},               "🚫 Falha Crítica"}
 };

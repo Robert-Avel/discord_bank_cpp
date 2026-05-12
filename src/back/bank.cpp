@@ -2,7 +2,6 @@
 #include "accont.hpp"
 #include "bank_status.hpp"
 #include "money.hpp"
-#include <iostream>
 
 Account* Bank::_getAccont(const std::string id) {
     for(Account& a: acconts) {
@@ -46,7 +45,6 @@ Status Bank::depositWhiteList(Account* to, cents value, std::string money_id) {
 
 Status Bank::pay(Account* from, cents value, std::string money_id) {
     if(from == nullptr) {return PAYER_NOT_FOUND;}
-
 
     return from->removeMoney(money_id, value);
 }
