@@ -8,7 +8,7 @@
 #include <dpp/message.h>
 #include <dpp/once.h>
 #include <dpp/snowflake.h>
-#include "sysbank.hpp"
+#include "central_bank.hpp"
 #include "interface.hpp"
 #include <ctime>
 #include <sstream>

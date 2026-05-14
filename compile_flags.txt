@@ -5,8 +5,10 @@
 ./src/back/accont.cpp
 ./src/back/bank.cpp
 ./src/back/money.cpp
-./src/back/sysbank.cpp
+./src/back/central_bank.cpp
 ./src/back/saver.cpp
+./src/back/client_user.cpp
+./src/back/client_manager.cpp
 
 ./src/front/formater.cpp
 ./src/front/interface.cpp

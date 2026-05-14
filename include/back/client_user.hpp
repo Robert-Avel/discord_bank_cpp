@@ -1,7 +1,6 @@
 #pragma once
-#include <optional>
 #include <string>
-#include <cstdint>
+#include "accont.hpp"
 #include "bank_status.hpp"
 
 /*
@@ -12,7 +11,7 @@ class ClientUser {
 
     std::string user_id;
     std::string bank_id;
-    std::optional<uint32_t> account_index;
+    Account* account;
 
 
     public:
@@ -24,10 +23,10 @@ class ClientUser {
      * @param global_name: Defines the global name used in interface
      * @param user_id: Unique ID for internal identification
      */
-    ClientUser(const std::string& bank_id, const std::string& global_name, const  std::string& user_id) {
+    ClientUser(const std::string& bank_id, const std::string& global_name, const  std::string& user_id): user_id(user_id) {
         this->global_name = global_name;
-        this->user_id = user_id;
         this->bank_id = bank_id;
+        this->account = nullptr;
     }
 
     /*
@@ -41,25 +40,24 @@ class ClientUser {
     const std::string& getUserID() const {return this->user_id;}
 
     /*
-     * Returns the Bank ID of Client
+     * Returns the Bank ID of Bank
      */
     const std::string& getBankID() const {return this->bank_id;}
 
     /*
      * Returns a pointer of the index of its account in Bank, returns nullptr if the client has no account
      */
-    const uint32_t* getAccountIndex() const {
-        if(this->account_index.has_value()) {return &account_index.value();}
-        return nullptr;
+    Account* getAccount() const {
+        return account;
     }
 
 
-    ~ClientUser();
-
     /*
      * @brief After the creation of an account, it may be linked with the Client, allowing fast acess
+     *
+     * @param a: Account object
      */
-    Status linkAccount(uint32_t index);
+    Status linkAccount(Account& a);
 
     /*
      * @brief Unlink with an account already created

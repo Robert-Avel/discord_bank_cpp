@@ -3,13 +3,28 @@
 #include "bank_status.hpp"
 #include <string>
 
+
+/*
+ * Main conteiner and manager of Bank. Responsible for create, delete and modify
+ */
 class CentralBank {
     std::vector<Bank> banks;
 
     public:
     std::string data_file_name;
+
+
+    /*
+     * @brief Main constructor of a Central Bank
+     *
+     * @param data_file_name: the file name where Centralbank save its Data Base.
+     */
     CentralBank(std::string data_file_name);
 
+
+    /*
+     * Save the database in a file in binary mode, create on if not exist
+     */
     void save();
 
     //Getters

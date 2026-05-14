@@ -1,11 +1,12 @@
 #include "client_user.hpp"
+#include "accont.hpp"
 #include "bank_status.hpp"
 
 
-Status ClientUser::linkAccount(uint32_t index) {
-    if(account_index.has_value()) {return ALREADY_EXIST;}
+Status ClientUser::linkAccount(Account& a) {
+    if(account != nullptr) {return ALREADY_EXIST;}
 
-    this->account_index = index;
+    this->account = &a;
     return SUCCESS;
 }
 
@@ -13,14 +14,9 @@ Status ClientUser::linkAccount(uint32_t index) {
  * @brief Unlink with an account already created
  */
 Status ClientUser::unlinkAccount() {
-    if (account_index.has_value()) {
-        account_index.reset();
+    if (account != nullptr) {
+        account = nullptr;
         return SUCCESS;
     }
     return NOT_FOUND;
-}
-
-
-ClientUser::~ClientUser() {
-    unlinkAccount();
 }

@@ -1,4 +1,4 @@
-#include "sysbank.hpp"
+#include "central_bank.hpp"
 #include "accont.hpp"
 #include "bank.hpp"
 #include "bank_status.hpp"
@@ -6,7 +6,6 @@
 #include "saver.hpp"
 #include <cstdint>
 #include <fstream>
-#include <ios>
 
 CentralBank::CentralBank(std::string data_file_name) {
     if (data_file_name.empty()) {return;}

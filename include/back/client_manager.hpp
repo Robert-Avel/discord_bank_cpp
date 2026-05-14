@@ -10,14 +10,6 @@
 class ClientManager {
     std::vector<ClientUser> clients;
 
-    /*
-     * @brief Support Private functions to get non-const ClientUser
-     *
-     * @param id: the ID of client
-     *
-     * @return A pointer to the Client User, or nullptr if not found
-     */
-    ClientUser* _getClient(const std::string& id);
 
     public:
     ClientManager() = default;
@@ -49,7 +41,7 @@ class ClientManager {
      *
      * @return A pointer to the Client User, or nullptr if not found
      */
-    const ClientUser* getClient(const std::string& id) const;
+    ClientUser* getClient(const std::string& id);
 
     /*
      * @brief Remove a client from the ID

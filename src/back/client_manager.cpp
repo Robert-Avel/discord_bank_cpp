@@ -4,9 +4,6 @@
 #include "client_user.hpp"
 #include <algorithm>
 
-ClientUser* ClientManager::_getClient(const std::string& id) {
-    return const_cast<ClientUser*>(this->getClient(id));
-}
 
 Status ClientManager::loadClient(const ClientUser& c) {
     if (getClient(c.getUserID()) != nullptr) {return ALREADY_EXIST;}
@@ -15,7 +12,7 @@ Status ClientManager::loadClient(const ClientUser& c) {
     return SUCCESS;
 }
 
-const ClientUser* ClientManager::getClient(const std::string& id) const {
+ClientUser* ClientManager::getClient(const std::string& id) {
     auto get = std::find_if(clients.begin(), clients.end(),
         [&id](ClientUser& c) {return c.getUserID() == id;});
 
