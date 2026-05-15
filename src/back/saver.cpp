@@ -1,5 +1,6 @@
 #include "saver.hpp"
 #include "accont.hpp"
+#include "central_bank.hpp"
 #include "money.hpp"
 #include <cstdint>
 #include <vector>
@@ -40,8 +41,6 @@ bool save::account(const Account& c, std::ofstream& file) {
         return false;
     }
 
-
-
     const uint32_t id_size = c.getID().size();
     file.write( (char*) &id_size, sizeof(uint32_t));
     file.write( (char*) c.getID().c_str(), id_size);
@@ -81,6 +80,22 @@ bool save::bank(const Bank& b, std::ofstream& file) {
         for(const MoneyType& mt: _white_list_m) {
             save::money_type(mt, file);
         }
+    }
+
+    return true;
+}
+
+
+bool save::central_bank(const CentralBank& cb, std::ofstream& file) {
+    if (!file) {
+        std::cerr << "Error: File stream is not open or is in an error state.\n";
+        return false;
+    }
+
+    int32_t bank_n = cb.getBankN();
+    file.write( (char*) &bank_n, sizeof(int32_t));
+    for(const Bank& b: *cb.getBankData()) {
+        save::bank(b, file);
     }
 
     return true;
@@ -174,4 +189,22 @@ Bank load::bank(std::ifstream& file) {
     }
 
     return bank;
+}
+
+
+CentralBank load::central_bank(std::ifstream& file) {
+    if (!file) {
+        return CentralBank{};
+    }
+
+    CentralBank buffer;
+
+    int32_t bank_n;
+    file.read((char*) &bank_n, sizeof(int32_t));
+    for(int i = 0; i < bank_n; i++) {
+        Bank b = load::bank(file);
+        buffer.loadBank(b);
+    }
+
+    return buffer;
 }

@@ -3,24 +3,14 @@
 #include "bank_status.hpp"
 #include "money.hpp"
 
-Account* Bank::_getAccont(const std::string id) {
+
+Account* Bank::getAccont(const std::string id) {
     for(Account& a: acconts) {
         if(id == a.getID()) {
             return &a;
         }
     }
     return nullptr;
-}
-
-Bank::Bank(std::string id) {this->id = id;}
-
-std::string Bank::getID() const {return id;}
-size_t Bank::getAccontN() const {return acconts.size();}
-const std::vector<Account> Bank::getAccounts() const {return acconts;}
-const std::vector<MoneyType> Bank::getWhiteListMoney() const {return white_list_money;}
-
-Account* Bank::getAccont(const std::string id) {
-    return _getAccont(id);
 }
 
 
@@ -51,7 +41,7 @@ Status Bank::pay(Account* from, cents value, std::string money_id) {
 
 
 Status Bank::openAccont(std::string id) {
-    if(_getAccont(id) == nullptr) {
+    if(getAccont(id) == nullptr) {
         acconts.push_back(
             Account{id}
         );

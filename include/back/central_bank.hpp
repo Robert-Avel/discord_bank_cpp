@@ -11,7 +11,6 @@ class CentralBank {
     std::vector<Bank> banks;
 
     public:
-    std::string data_file_name;
 
 
     /*
@@ -19,7 +18,7 @@ class CentralBank {
      *
      * @param data_file_name: the file name where Centralbank save its Data Base.
      */
-    CentralBank(std::string data_file_name);
+    CentralBank() = default;
 
 
     /*
@@ -29,12 +28,24 @@ class CentralBank {
 
     //Getters
     Bank* getBank(std::string id);
+    const std::vector<Bank>* getBankData() const {return &this->banks;}
+
+    size_t getBankN() const {return banks.size();};
 
     //Operações
     //Criação
     Status openBank(std::string id);
     Status openAccont(std::string bank_id, std::string accont_id);
     Status newMoney(std::string bank_id, std::string money_id, std::string money_symbol);
+
+
+    bool loadBank(Bank& b) {
+        if(getBank(b.getID()) == nullptr) {
+            banks.push_back(b);
+            return true;
+        }
+        return false;
+    }
 
 
     //Transação
