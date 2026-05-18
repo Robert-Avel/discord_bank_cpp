@@ -9,6 +9,7 @@
 ./src/back/saver.cpp
 ./src/back/client_user.cpp
 ./src/back/client_manager.cpp
+./src/back/bot_sys.cpp
 
 ./src/front/formater.cpp
 ./src/front/interface.cpp

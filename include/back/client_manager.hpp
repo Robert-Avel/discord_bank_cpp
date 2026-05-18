@@ -43,6 +43,10 @@ class ClientManager {
      */
     ClientUser* getClient(const std::string& id);
 
+    /*Get a Iterator of Clients from begin */
+    std::vector<ClientUser>& getAllClient() {return clients;}
+
+
     /*
      * @brief Remove a client from the ID
      *

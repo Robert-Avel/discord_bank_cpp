@@ -8,14 +8,16 @@
 #include <dpp/message.h>
 #include <dpp/once.h>
 #include <dpp/snowflake.h>
-#include "central_bank.hpp"
+#include "base_payload.hpp"
+#include "bot_sys.hpp"
+#include "formater.hpp"
 #include "interface.hpp"
 #include <ctime>
 #include <sstream>
 #define SAVE_BREAK 1800
 
 
-static CentralBank db("bank.bin");
+static DiogoBotSys sys;
 static std::time_t last_saved = 0;
 
 
@@ -26,6 +28,7 @@ std::string formatMention(dpp::snowflake* id, size_t qnt) {
     }
     return buffer.str();
 }
+
 
 
 dpp::embed payloadAssembly(const FinalPayLoad& pl) {
@@ -40,6 +43,9 @@ dpp::embed payloadAssembly(const FinalPayLoad& pl) {
     return buffer;
 }
 
+dpp::embed payloadAssembly(const BasePayLoad& pl) {
+    return payloadAssembly(FinalPayLoad(pl));
+}
 
 int main() {
     std::string token = getenv("BOT_TOKEN");
@@ -53,35 +59,35 @@ int main() {
         if(event.command.get_command_name() == "abrir-banco") {
             event.reply(
                 payloadAssembly(
-                    cmd::open_bank(&db, event.command.guild_id.str())
+                    sys.open_bank(event.command.guild_id.str())
                 )
             );
         }
         else if(event.command.get_command_name() == "abrir-conta") {
             event.reply(
                 payloadAssembly(
-                    cmd::open_accont(&db, event.command.guild_id.str(), event.command.usr.id.str())
+                    sys.open_accont(event.command.guild_id.str(), event.command.usr.id.str())
                 )
             );
         }
         else if(event.command.get_command_name() == "ver-banco") {
             event.reply(
                 payloadAssembly(
-                    cmd::bank_info(&db, event.command.guild_id.str())
+                    sys.bank_info(event.command.guild_id.str())
                 )
             );
         }
         else if(event.command.get_command_name() == "ver-conta") {
             event.reply(
                 payloadAssembly(
-                    cmd::account_info(&db, event.command.guild_id.str(), event.command.usr.id.str())
+                    sys.account_info(event.command.guild_id.str(), event.command.usr.id.str())
                 )
             );
         }
         else if(event.command.get_command_name() == "nova-moeda") {
             event.reply(
                 payloadAssembly(
-                    cmd::money_new(&db, event.command.guild_id.str(),
+                    sys.money_new(event.command.guild_id.str(),
                         std::get<std::string>(event.get_parameter("id-da-moeda")),
                         std::get<std::string>(event.get_parameter("simbolo-da-moeda"))
                     )
@@ -91,7 +97,7 @@ int main() {
         else if(event.command.get_command_name() == "ver-moeda") {
             event.reply(
                 payloadAssembly(
-                    cmd::money_info(&db, event.command.guild_id.str(),
+                    sys.money_info(event.command.guild_id.str(),
                         std::get<std::string>(event.get_parameter("id-da-moeda"))
                     )
                 )
@@ -106,7 +112,7 @@ int main() {
 
             event.reply(
                 payloadAssembly(
-                    cmd::deposit(&db, event.command.guild_id.str(),
+                    sys.deposit(event.command.guild_id.str(),
                         std::get<dpp::snowflake>(event.get_parameter("id-destinatario")).str(),                        std::get<std::string>(event.get_parameter("id-da-moeda")),
                         value
                     )
@@ -121,7 +127,7 @@ int main() {
             }
             event.reply(
                 payloadAssembly(
-                    cmd::pay(&db, event.command.guild_id.str(),
+                    sys.pay(event.command.guild_id.str(),
                         value,
                         std::get<std::string>(event.get_parameter("id-da-moeda")),
                         event.command.usr.id.str()
@@ -137,7 +143,7 @@ int main() {
             }
             event.reply(
                 payloadAssembly(
-                    cmd::transference(&db, event.command.guild_id.str(),
+                    sys.transference(event.command.guild_id.str(),
                         value,
                         std::get<std::string>(event.get_parameter("id-da-moeda")),
                         event.command.usr.id.str(),
@@ -151,8 +157,8 @@ int main() {
         }
 
         if(last_saved == 0 || std::difftime(std::time(NULL), last_saved) > SAVE_BREAK) {
-            db.save();
-            std::cout << "Saved in " << db.data_file_name << "\n";
+           // db.save();
+           // std::cout << "Saved in " << db.data_file_name << "\n";
             last_saved = std::time(NULL);
         }
     });

@@ -1,6 +1,7 @@
 #pragma once
 #include "accont.hpp"
 #include "bank_status.hpp"
+#include "client_manager.hpp"
 #include "money.hpp"
 
 
@@ -8,6 +9,7 @@ class Bank {
     std::string id;
     std::vector<Account> acconts;
     std::vector<MoneyType> white_list_money;
+    ClientManager clients;
 
     public:
     Bank(std::string id) {this->id = id;}
@@ -39,7 +41,7 @@ class Bank {
 
     @return Um vetor constante de objetos Account.
     */
-    const std::vector<Account> getAccounts() const {return acconts;}
+    std::vector<Account> getAccounts() const {return acconts;}
 
     /*
     @brief Obtém uma cópia constante do vetor de moedas na lista branca.
