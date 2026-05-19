@@ -23,9 +23,8 @@ class ClientUser {
      * @param global_name: Defines the global name used in interface
      * @param user_id: Unique ID for internal identification
      */
-    ClientUser(const std::string& bank_id, const std::string& global_name, const  std::string& user_id): user_id(user_id) {
+    ClientUser(const std::string& global_name, const  std::string& user_id): user_id(user_id) {
         this->global_name = global_name;
-        this->bank_id = bank_id;
         this->account = nullptr;
     }
 

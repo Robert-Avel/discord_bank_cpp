@@ -28,8 +28,8 @@ class ClientManager {
      *
      * @returns the Status of Operation (SUCESS || ALREADY_EXIST)
      */
-    Status newClient(const std::string& bank_id, const std::string& global_name, const  std::string& id) {
-        auto c = ClientUser(bank_id, global_name, id);
+    Status newClient(const std::string& global_name, const  std::string& id) {
+        auto c = ClientUser(global_name, id);
         return loadClient(c);
     }
 

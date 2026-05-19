@@ -1,8 +1,7 @@
 #include "bot_sys.hpp"
 #include "accont.hpp"
+#include "bank_status.hpp"
 #include "base_payload.hpp"
-#include "client_user.hpp"
-#include <iostream>
 
 
 
@@ -21,17 +20,18 @@ BasePayLoad DiogoBotSys::open_bank(std::string bank_id) {
 BasePayLoad DiogoBotSys::open_accont(std::string bank_id, std::string accont_id) {
     Operation op = OPEN_ACCONT;
 
-    Status result = central_bank.openAccont(bank_id, accont_id);
-    switch (result) {
-        case SUCCESS:
-            return {op, SUCCESS, accont_id};
-        case ALREADY_EXIST:
-            return {op, ALREADY_EXIST, accont_id};
-        case BANK_NOT_FOUND:
-            return {op, BANK_NOT_FOUND, bank_id};
-        default:
-            throw std::exception();
-    };
+    Bank* b = central_bank.getBank(bank_id);
+    if (b == nullptr) {return {op, BANK_NOT_FOUND, bank_id};}
+
+    Status result = b->openAccont(accont_id);
+
+    if (result == SUCCESS) {
+        return {op, SUCCESS, accont_id};
+
+    } else if(result == ALREADY_EXIST) {
+        return {op, ALREADY_EXIST, accont_id};
+
+    } else throw std::exception();
 }
 
 BasePayLoad DiogoBotSys::bank_info(std::string bank_id) {
@@ -67,18 +67,18 @@ BasePayLoad DiogoBotSys::account_info(std::string bank_id, std::string accont_id
 BasePayLoad DiogoBotSys::money_new(std::string bank_id, std::string money_id, std::string money_symbol) {
     Operation op = NEW_MONEY;
 
-    Status result = central_bank.newMoney(bank_id, money_id, money_symbol);
+    Bank* b = central_bank.getBank(bank_id);
+    if (b == nullptr) {return {op, BANK_NOT_FOUND, bank_id};}
 
-    switch (result) {
-        case SUCCESS:
-            return {op, SUCCESS, MoneyType{money_id, money_symbol}};
-        case BANK_NOT_FOUND:
-            return {op, BANK_NOT_FOUND, bank_id};
-        case ALREADY_EXIST:
-            return {op, ALREADY_EXIST, money_id};
-        default:
-            throw std::exception();
-    }
+    Status result = b->moneyNew(money_id, money_symbol);
+
+    if (result == SUCCESS) {
+        return {op, SUCCESS, MoneyType{money_id, money_symbol}};
+
+    } else if(result == ALREADY_EXIST) {
+        return {op, ALREADY_EXIST, money_id};
+
+    } else throw std::exception();
 }
 
 BasePayLoad DiogoBotSys::money_info(std::string bank_id, std::string money_id) {

@@ -33,10 +33,7 @@ class CentralBank {
     size_t getBankN() const {return banks.size();};
 
     //Operações
-    //Criação
     Status openBank(std::string id);
-    Status openAccont(std::string bank_id, std::string accont_id);
-    Status newMoney(std::string bank_id, std::string money_id, std::string money_symbol);
 
 
     bool loadBank(Bank& b) {
@@ -46,26 +43,4 @@ class CentralBank {
         }
         return false;
     }
-
-
-    //Transação
-    Status pay(
-        std::string bank_id,
-        cents value,
-        std::string money_id,
-        std::string from_id
-    );
-    Status deposit(
-        std::string bank_id,
-        cents value,
-        std::string money_id,
-        std::string to_id
-    );
-    Status transference(
-        std::string bank_id,
-        cents value,
-        std::string money_id,
-        std::string from_id,
-        std::string to_id
-    );
 };

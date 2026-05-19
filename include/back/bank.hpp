@@ -2,6 +2,7 @@
 #include "accont.hpp"
 #include "bank_status.hpp"
 #include "client_manager.hpp"
+#include "client_user.hpp"
 #include "money.hpp"
 
 
@@ -140,4 +141,14 @@ class Bank {
     @return Um objeto Status indicando o sucesso ou falha da operação.
     */
     Status loadAccount(const Account& a);
+
+
+    Status newClient(const std::string& id, const std::string& global_name) {
+        return clients.newClient(global_name, id);
+    }
+
+    ClientUser* getClient(const std::string& id) {
+        return clients.getClient(id);
+    }
+
 };
