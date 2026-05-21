@@ -12,6 +12,5 @@
 ./src/back/bot_sys.cpp
 
 ./src/front/formater.cpp
-./src/front/interface.cpp
 
 -Wl,-rpath=/usr/local/lib

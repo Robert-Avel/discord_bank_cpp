@@ -10,5 +10,6 @@ enum Status {
     ACCOUNT_NOT_FOUND,
     BANK_NOT_FOUND,
     RECIEVER_NOT_FOUND,
-    PAYER_NOT_FOUND
+    PAYER_NOT_FOUND,
+    NO_JOB,
 };
