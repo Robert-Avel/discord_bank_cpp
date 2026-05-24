@@ -12,4 +12,5 @@ enum Status {
     RECIEVER_NOT_FOUND,
     PAYER_NOT_FOUND,
     NO_JOB,
+    CLIENT_NOT_FOUND
 };

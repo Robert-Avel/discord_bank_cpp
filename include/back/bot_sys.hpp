@@ -36,5 +36,8 @@ class DiogoBotSys {
         BasePayLoad deposit(std::string bank_id, std::string user_id, std::string money_id, cents value);
         BasePayLoad pay(std::string bank_id, cents value, std::string money_id, std::string from_id);
         BasePayLoad transference(std::string bank_id, cents value, std::string money_id, std::string from_id, std::string to_id);
+        BasePayLoad hire_user(std::string bank_id, std::string client_id, std::string role_name, std::string money_id, cents salary);
+        BasePayLoad fire_user(std::string bank_id, std::string client_id);
+        BasePayLoad pay_client(std::string bank_id, std::string client_id);
 
 };

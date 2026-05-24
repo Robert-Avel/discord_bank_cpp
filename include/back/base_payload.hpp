@@ -17,7 +17,10 @@ enum Operation {
     INFO_MONEY,
     PAYMENT,
     DEPOSIT,
-    TRANSFERENCE
+    TRANSFERENCE,
+    HIRE_USER,
+    FIRE_USER,
+    PAY_CLIENT
 };
 
 
@@ -46,6 +49,10 @@ namespace payload {
         std::string id;
         std::string balances;
     };
+    struct ImprovisedHire {
+        std::string job_name;
+        Money salary;
+    };
 }
 
 
@@ -71,7 +78,8 @@ using PayloadVariant = std::variant<
     payload::Pay,
     payload::Trasference,
     payload::Bank,
-    payload::Account
+    payload::Account,
+    payload::ImprovisedHire
 >;
 
 struct BasePayLoad {

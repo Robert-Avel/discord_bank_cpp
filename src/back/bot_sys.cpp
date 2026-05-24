@@ -2,6 +2,8 @@
 #include "accont.hpp"
 #include "bank_status.hpp"
 #include "base_payload.hpp"
+#include "client_user.hpp"
+#include "money.hpp"
 
 
 
@@ -181,4 +183,70 @@ BasePayLoad DiogoBotSys::transference(std::string bank_id, cents value, std::str
     } else {
         return {op, FAILURE, "Critical"};
     }
+}
+
+
+BasePayLoad DiogoBotSys::hire_user(std::string bank_id, std::string client_id, std::string role_name, std::string money_id, cents salary) {
+    Operation op = HIRE_USER;
+
+    Bank* b = this->central_bank.getBank(bank_id);
+    if(b == nullptr) {return {op, BANK_NOT_FOUND, bank_id};}
+
+
+    ClientUser* cu = this->clients.getClient(client_id);
+    if(cu == nullptr) {return {op, CLIENT_NOT_FOUND, client_id};}
+
+    MoneyType* m = b->getMoney(money_id);
+    if(m == nullptr) {return {op, MONEY_NOT_FOUND, money_id};}
+
+    Money f_salary{*m, salary};
+
+    return {
+        op,
+        cu->autoHire(role_name, f_salary),
+        payload::ImprovisedHire{role_name, f_salary}
+    };
+}
+
+
+BasePayLoad DiogoBotSys::fire_user(std::string bank_id, std::string client_id) {
+    Operation op = FIRE_USER;
+
+    Bank* b = this->central_bank.getBank(bank_id);
+    if(b == nullptr) {return {op, BANK_NOT_FOUND, bank_id};}
+
+
+    ClientUser* cu = this->clients.getClient(client_id);
+    if(cu == nullptr) {return {op, CLIENT_NOT_FOUND, client_id};}
+
+    const ImprovisedJob* job = cu->getJob();
+    if(job == nullptr) {return {op, NO_JOB, client_id};}
+
+
+    return {
+        op,
+        cu->autoFire(),
+        payload::ImprovisedHire{job->getJobName(), job->getSalary()}
+    };
+}
+
+
+BasePayLoad DiogoBotSys::pay_client(std::string bank_id, std::string client_id) {
+    Operation op = PAY_CLIENT;
+
+    Bank* b = this->central_bank.getBank(bank_id);
+    if(b == nullptr) {return {op, BANK_NOT_FOUND, bank_id};}
+
+
+    ClientUser* cu = this->clients.getClient(client_id);
+    if(cu == nullptr) {return {op, CLIENT_NOT_FOUND, client_id};}
+
+    const ImprovisedJob* job = cu->getJob();
+    if(job == nullptr) {return {op, NO_JOB, client_id};}
+
+    return {
+        op,
+        cu->salaryPay(),
+        payload::Deposit{job->getSalary().value, job->getSalary()._mt, client_id}
+    };
 }
