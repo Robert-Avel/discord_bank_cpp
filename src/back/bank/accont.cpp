@@ -1,5 +1,5 @@
 #include "accont.hpp"
-#include "bank_status.hpp"
+#include "status.hpp"
 #include "money.hpp"
 #include <algorithm>
 #include <sstream>
@@ -36,15 +36,21 @@ const cents Account::getBalance(std::string money_id) {
     return money->value;
 }
 
-void Account::addMoney(std::string id, std::string symbol, cents value) {
+Status Account::addMoney(std::string id, std::string symbol, cents value) {
+    if(value >= MAX_BALANCE) {return BALANCE_IN_MAX;}
+
     Money* money = _getMoney(id);
     if (money == nullptr) {
         balances.push_back(
             Money{  MoneyType{id, symbol},  value}
         );
-    } else {
-        money->value += value;
+        return SUCCESS;
     }
+
+    if(money->value + value >= MAX_BALANCE) {return BALANCE_IN_MAX;}
+
+    money->value += value;
+    return SUCCESS;
 }
 
 Status Account::removeMoney(std::string id, cents value) {

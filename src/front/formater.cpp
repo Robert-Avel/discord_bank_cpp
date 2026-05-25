@@ -75,6 +75,22 @@ FieldMap FinalPayLoad::formatField(const PayloadVariant& pl) {
             {fields_PT.at(PL_ACCOUNT)[1], p.balances}
         };
     }
+    else if (std::holds_alternative<payload::ImprovisedHire>(pl)) {
+        auto p = std::get<payload::ImprovisedHire>(pl);
+        return FieldMap{
+            {fields_PT.at(PL_IMPROVISED_JOB)[0], p.job_name},
+            {fields_PT.at(PL_IMPROVISED_JOB)[1], p.salary.format()},
+        };
+    }
+    else if (std::holds_alternative<payload::Client>(pl)) {
+        auto p = std::get<payload::Client>(pl);
+        return FieldMap{
+            {fields_PT.at(PL_CLIENT)[0], p.global_name},
+            {fields_PT.at(PL_CLIENT)[1], p.id},
+            {fields_PT.at(PL_CLIENT)[2], p.bank_id},
+            {fields_PT.at(PL_CLIENT)[3], p.balances}
+        };
+    }
     else {
         return FieldMap{{"FIELD_ERROR", "PAYLOAD_NOT_FOUND"}};
     }

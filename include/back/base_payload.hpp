@@ -3,13 +3,13 @@
 #include <string>
 #include <variant>
 #include <vector>
-#include "bank_status.hpp"
+#include "status.hpp"
 #include "money.hpp"
 
 
 enum Operation {
     OPEN_BANK, //OK
-    OPEN_ACCONT, //OK
+    INIT_USER, //OK
     INFO_BANK, //OK
     INFO_ACCOUNT, //OK
     CHECK_BALANCE,
@@ -53,6 +53,12 @@ namespace payload {
         std::string job_name;
         Money salary;
     };
+    struct Client {
+        std::string global_name;
+        std::string id;
+        std::string bank_id;
+        std::string balances;
+    };
 }
 
 
@@ -65,7 +71,9 @@ enum PayloadType {
     PL_PAY,
     PL_TRANSFERENCE,
     PL_BANK,
-    PL_ACCOUNT
+    PL_ACCOUNT,
+    PL_IMPROVISED_JOB,
+    PL_CLIENT
 };
 
 
@@ -79,7 +87,8 @@ using PayloadVariant = std::variant<
     payload::Trasference,
     payload::Bank,
     payload::Account,
-    payload::ImprovisedHire
+    payload::ImprovisedHire,
+    payload::Client
 >;
 
 struct BasePayLoad {

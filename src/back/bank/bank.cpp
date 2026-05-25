@@ -1,6 +1,7 @@
 #include "bank.hpp"
 #include "accont.hpp"
-#include "bank_status.hpp"
+#include "client_user.hpp"
+#include "status.hpp"
 #include "money.hpp"
 
 
@@ -18,8 +19,7 @@ Status Bank::deposit(Account* to, cents value, std::string money_id, std::string
     if(to == nullptr) {return RECIEVER_NOT_FOUND;}
 
 
-    to->addMoney(money_id, money_symbol, value);
-    return SUCCESS;
+    return to->addMoney(money_id, money_symbol, value);
 }
 
 
@@ -28,8 +28,7 @@ Status Bank::depositWhiteList(Account* to, cents value, std::string money_id) {
     if(to == nullptr) {return RECIEVER_NOT_FOUND;}
     if(money == nullptr) {return MONEY_NOT_FOUND;}
 
-    to->addMoney(money->id, money->symbol, value);
-    return SUCCESS;
+    return to->addMoney(money->id, money->symbol, value);
 }
 
 
@@ -72,8 +71,7 @@ Status Bank::transference(
 
 
     if (s == SUCCESS) {
-        to->addMoney(money_id, money_symbol, value);
-        return SUCCESS;
+        return to->addMoney(money_id, money_symbol, value);
     }
     return s;
 }
@@ -99,4 +97,27 @@ MoneyType* Bank::getMoney(std::string id) {
         }
     }
     return nullptr;
+}
+
+
+
+Status Bank::newClient(const std::string& id, const std::string& global_name) {
+    Status s = clients.newClient(global_name, id);
+    if(s != SUCCESS) {return s;}
+
+    s = openAccont(id);
+    if(s != SUCCESS) {return s;}
+
+    return linkAccount(id);
+}
+
+
+Status Bank::linkAccount(const std::string& id) {
+    Account* a = getAccont(id);
+    if (a == nullptr) {return ACCOUNT_NOT_FOUND;}
+
+    ClientUser* c = clients.getClient(id);
+    if (c == nullptr) {return CLIENT_NOT_FOUND;}
+
+    return c->linkAccount(*a);
 }

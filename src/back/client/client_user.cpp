@@ -1,6 +1,6 @@
 #include "client_user.hpp"
 #include "accont.hpp"
-#include "bank_status.hpp"
+#include "status.hpp"
 #include <sstream>
 
 
@@ -11,9 +11,6 @@ Status ClientUser::linkAccount(Account& a) {
     return SUCCESS;
 }
 
-/*
- * @brief Unlink with an account already created
- */
 Status ClientUser::unlinkAccount() {
     if (account != nullptr) {
         account = nullptr;

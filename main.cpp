@@ -11,7 +11,6 @@
 #include "base_payload.hpp"
 #include "bot_sys.hpp"
 #include "formater.hpp"
-#include "interface.hpp"
 #include <ctime>
 #include <sstream>
 #define SAVE_BREAK 1800
@@ -23,7 +22,7 @@ static std::time_t last_saved = 0;
 
 std::string formatMention(dpp::snowflake* id, size_t qnt) {
     std::stringstream buffer;
-    for(int i = 0; i < qnt; i++) {
+    for(unsigned int i = 0; i < qnt; i++) {
         buffer << "<@" << id->str() << "> ";
     }
     return buffer.str();
@@ -63,10 +62,12 @@ int main() {
                 )
             );
         }
-        else if(event.command.get_command_name() == "abrir-conta") {
+        else if(event.command.get_command_name() == "iniciar-usuario") {
             event.reply(
                 payloadAssembly(
-                    sys.open_accont(event.command.guild_id.str(), event.command.usr.id.str())
+                    sys.init_user(event.command.guild_id.str(), event.command.usr.id.str(),
+                        std::get<std::string>(event.get_parameter("nome-de-usuario"))
+                    )
                 )
             );
         }
@@ -80,7 +81,7 @@ int main() {
         else if(event.command.get_command_name() == "ver-conta") {
             event.reply(
                 payloadAssembly(
-                    sys.account_info(event.command.guild_id.str(), event.command.usr.id.str())
+                    sys.user_info(event.command.guild_id.str(), event.command.usr.id.str())
                 )
             );
         }
@@ -168,7 +169,9 @@ int main() {
         if (dpp::run_once<struct register_bot_commands>()) {
             //bot.global_bulk_command_delete();
             bot.global_command_create(dpp::slashcommand("abrir-banco", "Abra um novo banco neste servidor.", bot.me.id));
-            bot.global_command_create(dpp::slashcommand("abrir-conta", "Abra uma nova conta neste servidor", bot.me.id));
+            bot.global_command_create(dpp::slashcommand("iniciar-usuario", "Inicia um usuario no servidor", bot.me.id)
+                .add_option(dpp::command_option(dpp::co_string, "nome-de-usuario", "O nome global", true))
+            );
             bot.global_command_create(dpp::slashcommand("ver-banco", "Informações do banco", bot.me.id));
             bot.global_command_create(dpp::slashcommand("ver-conta", "Informações da conta", bot.me.id));
             bot.global_command_create(dpp::slashcommand("nova-moeda", "Adiciona uma nova moeda", bot.me.id)

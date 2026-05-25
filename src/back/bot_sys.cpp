@@ -1,9 +1,30 @@
 #include "bot_sys.hpp"
 #include "accont.hpp"
-#include "bank_status.hpp"
+#include "bank.hpp"
+#include "status.hpp"
 #include "base_payload.hpp"
 #include "client_user.hpp"
 #include "money.hpp"
+#include <iostream>
+#include <string>
+
+
+void DiogoBotSys::linkAccounts() {
+    for(ClientUser& c: clients.getAllClient()) {
+        Bank* b = central_bank.getBank(c.getBankID());
+        if (b == nullptr) {
+            std::cout << "Link Error, Bank Not found => " << c.getUserID();
+            continue;
+        }
+        Account* a = b->getAccont(c.getUserID());
+        if (a == nullptr) {
+            std::cout << "Link Error, Account Not found => " << c.getUserID();
+            continue;
+        }
+
+        c.linkAccount(*a);
+    }
+}
 
 
 
@@ -19,21 +40,17 @@ BasePayLoad DiogoBotSys::open_bank(std::string bank_id) {
 }
 
 
-BasePayLoad DiogoBotSys::open_accont(std::string bank_id, std::string accont_id) {
-    Operation op = OPEN_ACCONT;
+BasePayLoad DiogoBotSys::init_user(std::string bank_id, std::string user_id, std::string user_name) {
+    Operation op = INIT_USER;
 
     Bank* b = central_bank.getBank(bank_id);
     if (b == nullptr) {return {op, BANK_NOT_FOUND, bank_id};}
 
-    Status result = b->openAccont(accont_id);
-
-    if (result == SUCCESS) {
-        return {op, SUCCESS, accont_id};
-
-    } else if(result == ALREADY_EXIST) {
-        return {op, ALREADY_EXIST, accont_id};
-
-    } else throw std::exception();
+    return {
+        op,
+        b->newClient(user_id, user_name),
+        user_id
+    };
 }
 
 BasePayLoad DiogoBotSys::bank_info(std::string bank_id) {
@@ -47,7 +64,7 @@ BasePayLoad DiogoBotSys::bank_info(std::string bank_id) {
 }
 
 
-BasePayLoad DiogoBotSys::account_info(std::string bank_id, std::string accont_id) {
+BasePayLoad DiogoBotSys::user_info(std::string bank_id, std::string user_id) {
     Operation op = INFO_ACCOUNT;
 
     Bank* b = central_bank.getBank(bank_id);
@@ -55,13 +72,16 @@ BasePayLoad DiogoBotSys::account_info(std::string bank_id, std::string accont_id
         return {op, BANK_NOT_FOUND, bank_id};
     }
 
-    const Account* a = b->getAccont(accont_id);
-    if (a == nullptr) {
-        return {op, ACCOUNT_NOT_FOUND, accont_id};
+    ClientUser* c = b->getClient(user_id);
+    if (c == nullptr) {return {op, CLIENT_NOT_FOUND, user_id};};
+
+
+    if (c->getAccount() == nullptr) {
+        return {op, ACCOUNT_NOT_FOUND, user_id};
     }
 
     return {op, SUCCESS,
-        payload::Account{accont_id, a->formatBalance()}
+        payload::Client{c->getGlobalName(), user_id, bank_id, c->getAccount()->formatBalance()}
     };
 }
 

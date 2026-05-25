@@ -1,4 +1,4 @@
-#include "bank_status.hpp"
+#include "status.hpp"
 #include "base_payload.hpp"
 #include <map>
 #include <vector>
@@ -17,13 +17,15 @@ fields_PT = {
     {PL_TRANSFERENCE, {"Moeda", "Valor", "Remetente","Destinatário"}},
     {PL_BANK, {"ID", "Nº Contas"}},
     {PL_ACCOUNT, {"ID", "Saldo(s)"}},
+    {PL_IMPROVISED_JOB, {"Cargo", "Salário"}},
+    {PL_CLIENT, {"Nome", "ID", "ID do Banco", "Saldo(s)"}},
 };
 
 
 const std::map<Operation, std::string>
 operation_PT = {
     {OPEN_BANK, "Abrir Banco"},
-    {OPEN_ACCONT, "Abrir Conta"},
+    {INIT_USER, "Abrir Conta"},
     {INFO_BANK, "Informaçôes do Banco"},
     {INFO_ACCOUNT, "Informaçôes da Conta"},
     {CHECK_BALANCE, "Saldo de Conta"},
@@ -31,7 +33,10 @@ operation_PT = {
     {INFO_MONEY, "Informação de Moeda"},
     {PAYMENT, "Pagamento"},
     {DEPOSIT, "Deposito"},
-    {TRANSFERENCE, "Transferência"}
+    {TRANSFERENCE, "Transferência"},
+    {HIRE_USER, "Contratação"},
+    {FIRE_USER, "Demissão"},
+    {PAY_CLIENT, "Pagamento Salarial"}
 };
 
 
@@ -46,7 +51,10 @@ status_PT = {
     {Status::ACCOUNT_NOT_FOUND,"Conta não encontrada"},
     {Status::BANK_NOT_FOUND,"Banco não encontrado"},
     {Status::RECIEVER_NOT_FOUND,"O Recebedor não foi encontrado"},
-    {Status::PAYER_NOT_FOUND, "O Pagador não foi encontrado"}
+    {Status::PAYER_NOT_FOUND, "O Pagador não foi encontrado"},
+    {Status::NO_JOB, "Cliente sem um Emprego atual"},
+    {Status::CLIENT_NOT_FOUND, "Cliente não encontrado"},
+    {Status::BALANCE_IN_MAX, "O Pagador não foi encontrado"}
 };
 
 
@@ -57,9 +65,9 @@ messages_PT = {
     {{OPEN_BANK, Status::ALREADY_EXIST},      "⚠️ Este servidor já possui um sistema bancário central estabelecido."},
 
     // --- OPEN_ACCONT ---
-    {{OPEN_ACCONT, Status::SUCCESS},          "✅ Sua conta foi aberta! Bem-vindo ao sistema financeiro."},
-    {{OPEN_ACCONT, Status::ALREADY_EXIST},    "🆔 Você já possui uma conta ativa em nosso banco."},
-    {{OPEN_ACCONT, Status::BANK_NOT_FOUND},   "🚫 Não foi possível criar sua conta: Banco não encontrado."},
+    {{INIT_USER, Status::SUCCESS},          "✅ Sua conta foi aberta! Bem-vindo ao sistema financeiro."},
+    {{INIT_USER, Status::ALREADY_EXIST},    "🆔 Você já possui uma conta ativa em nosso banco."},
+    {{INIT_USER, Status::BANK_NOT_FOUND},   "🚫 Não foi possível criar sua conta: Banco não encontrado."},
 
 
     // --- INFO_BANK ---
@@ -71,6 +79,7 @@ messages_PT = {
     {{INFO_ACCOUNT, Status::SUCCESS},             "📄Infomações da Conta"},
     {{INFO_ACCOUNT, Status::BANK_NOT_FOUND},      "🚫Banco não encontrado"},
     {{INFO_ACCOUNT, Status::ACCOUNT_NOT_FOUND},   "🚫Conta não encontrado"},
+    {{INFO_ACCOUNT, Status::CLIENT_NOT_FOUND},   "🚫Cliente não encontrado"},
 
 
     // --- NEW_COIN ---
@@ -96,6 +105,8 @@ messages_PT = {
     {{DEPOSIT, Status::ACCOUNT_NOT_FOUND},    "🚫 Conta de destino inexistente ou nâo foi encontada"},
     {{DEPOSIT, Status::MONEY_NOT_FOUND},      "🚫 Moeda não encontrada"},
     {{DEPOSIT, Status::BANK_NOT_FOUND},       "🚫 O Banco nâo foi aberto neste servidor"},
+    {{PAYMENT, Status::BALANCE_IN_MAX},       "🚫 O Saldo chegou ao limite possivel."},
+
 
     // --- TRANSFERENCE ---
     {{TRANSFERENCE, Status::SUCCESS},               "📲 Transferência realizada com sucesso entre contas."},
@@ -104,5 +115,30 @@ messages_PT = {
     {{TRANSFERENCE, Status::RECIEVER_NOT_FOUND},    "🚫 Conta de destino inexistente ou nâo foi encontada"},
     {{TRANSFERENCE, Status::PAYER_NOT_FOUND},       "🚫 Conta do Pagador não encontrado no sistema."},
     {{TRANSFERENCE, Status::MONEY_NOT_FOUND},       "🚫 Moeda não encontrada"},
-    {{TRANSFERENCE, Status::FAILURE},               "🚫 Falha Crítica"}
+    {{TRANSFERENCE, Status::BALANCE_IN_MAX},        "🚫 O Saldo chegou ao limite possivel."},
+    {{TRANSFERENCE, Status::FAILURE},               "🚫 Falha Crítica"},
+
+
+    // --- HIRE USERE ---
+    {{HIRE_USER, Status::BANK_NOT_FOUND},        "🚫 O Banco nâo foi aberto neste servidor"},
+    {{HIRE_USER, Status::CLIENT_NOT_FOUND},      "🚫 O Cliente nâo foi encontrado neste servidor"},
+    {{HIRE_USER, Status::MONEY_NOT_FOUND},       "🚫 Moeda não encontrada"},
+    {{HIRE_USER, Status::ALREADY_EXIST},         "🚫 O Cliente já possui um Emprego"},
+    {{HIRE_USER, Status::SUCCESS},               "📝 Novo emprego Adquirido, agora você é quase um CLT"},
+
+    // --- FIRE USERE ---
+    {{FIRE_USER, Status::BANK_NOT_FOUND},        "🚫 O Banco nâo foi aberto neste servidor"},
+    {{FIRE_USER, Status::CLIENT_NOT_FOUND},      "🚫 O Cliente nâo foi encontrado neste servidor"},
+    {{FIRE_USER, Status::NO_JOB},                "🚫 O Cliente não possui um Emprego"},
+    {{FIRE_USER, Status::SUCCESS},               "📝 O Cliente já possui um Emprego"},
+
+    // --- PAY CLIENT ---
+    {{PAY_CLIENT, Status::BANK_NOT_FOUND},        "🚫 O Banco nâo foi aberto neste servidor"},
+    {{PAY_CLIENT, Status::CLIENT_NOT_FOUND},      "🚫 O Cliente nâo foi encontrado neste servidor"},
+    {{PAY_CLIENT, Status::NO_JOB},                "🚫 O Cliente não possui um Emprego"},
+    {{PAY_CLIENT, Status::ACCOUNT_NOT_FOUND},     "🚫 Conta do cliente inexistente ou nâo foi encontada"},
+    {{PAY_CLIENT, Status::BALANCE_IN_MAX},        "🚫 O Saldo chegou ao limite possivel."},
+    {{PAY_CLIENT, Status::SUCCESS},               "📥 Depósito confirmado! O valor foi adicionado ao seu saldo seguro."},
+
+
 };

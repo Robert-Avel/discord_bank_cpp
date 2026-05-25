@@ -1,8 +1,12 @@
 #pragma once
+#include <limits>
 #include <string>
 #include <cstdint>
 
 typedef uint32_t cents;
+
+#define MAX_BALANCE std::numeric_limits<uint32_t>::max()
+
 
 /*
  * @brief Money Type Unity struct

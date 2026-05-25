@@ -5,10 +5,21 @@
 #include <string>
 
 class DiogoBotSys {
+    private:
         /*
          * Link All accounts to their client to quick acess
          */
     void linkAccounts();
+
+    /*
+     * @brief: Get a Client's account if the same is linked
+     *
+     * @param bank_id: Bank ID to get Account
+     * @param bank_id: Client ID
+     *
+     * @return A pointer to that account, nullptr if not found or not linked
+     */
+    Account* getClientAccount(std::string& bank_id, std::string& client_id);
 
     public:
         CentralBank central_bank;
@@ -17,20 +28,10 @@ class DiogoBotSys {
         DiogoBotSys(): central_bank(), clients() {};
 
 
-        /*
-         * @brief: Get a Client's account if the same is linked
-         *
-         * @param bank_id: Bank ID to get Account
-         * @param bank_id: Client ID
-         *
-         * @return A pointer to that account, nullptr if not found or not linked
-         */
-        Account* getClientAccount(std::string& bank_id, std::string& client_id);
-
         BasePayLoad open_bank(std::string bank_id);
-        BasePayLoad open_accont(std::string bank_id, std::string accont_id);
+        BasePayLoad init_user(std::string bank_id, std::string accont_id, std::string user_name);
         BasePayLoad bank_info(std::string bank_id);
-        BasePayLoad account_info(std::string bank_id, std::string accont_id);
+        BasePayLoad user_info(std::string bank_id, std::string accont_id);
         BasePayLoad money_new(std::string bank_id, std::string money_id, std::string money_symbol);
         BasePayLoad money_info(std::string bank_id, std::string money_id);
         BasePayLoad deposit(std::string bank_id, std::string user_id, std::string money_id, cents value);

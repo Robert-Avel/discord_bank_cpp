@@ -1,5 +1,5 @@
 #pragma once
-#include "bank_status.hpp"
+#include "status.hpp"
 #include "client_user.hpp"
 #include <vector>
 
@@ -28,10 +28,7 @@ class ClientManager {
      *
      * @returns the Status of Operation (SUCESS || ALREADY_EXIST)
      */
-    Status newClient(const std::string& global_name, const  std::string& id) {
-        auto c = ClientUser(global_name, id);
-        return loadClient(c);
-    }
+    Status newClient(const std::string& global_name, const  std::string& id);
 
 
     /*

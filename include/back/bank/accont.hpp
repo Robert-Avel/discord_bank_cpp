@@ -1,5 +1,5 @@
 #pragma once
-#include "bank_status.hpp"
+#include "status.hpp"
 #include "money.hpp"
 #include <vector>
 
@@ -60,7 +60,7 @@ class Account {
      * @param symbol Símbolo monetário (ex: "R$", "$").
      * @param value Valor em centavos a ser adicionado.
      */
-    void addMoney(std::string id, std::string symbol, cents value);
+    Status addMoney(std::string id, std::string symbol, cents value);
 
     /**
      * @brief Remove ou saca um valor em uma moeda específica da conta.

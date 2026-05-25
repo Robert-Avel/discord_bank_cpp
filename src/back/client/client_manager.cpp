@@ -1,8 +1,14 @@
 
 #include "client_manager.hpp"
-#include "bank_status.hpp"
+#include "status.hpp"
 #include "client_user.hpp"
 #include <algorithm>
+
+
+Status ClientManager::newClient(const std::string& global_name, const  std::string& id) {
+    auto c = ClientUser(global_name, id);
+    return loadClient(c);
+}
 
 
 Status ClientManager::loadClient(const ClientUser& c) {

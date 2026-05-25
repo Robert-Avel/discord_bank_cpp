@@ -1,6 +1,6 @@
 #pragma once
 #include "accont.hpp"
-#include "bank_status.hpp"
+#include "status.hpp"
 #include "client_manager.hpp"
 #include "client_user.hpp"
 #include "money.hpp"
@@ -143,12 +143,13 @@ class Bank {
     Status loadAccount(const Account& a);
 
 
-    Status newClient(const std::string& id, const std::string& global_name) {
-        return clients.newClient(global_name, id);
-    }
+    Status newClient(const std::string& id, const std::string& global_name);
+
 
     ClientUser* getClient(const std::string& id) {
         return clients.getClient(id);
     }
 
+
+    Status linkAccount(const std::string& id);
 };

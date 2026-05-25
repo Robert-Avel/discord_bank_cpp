@@ -1,15 +1,19 @@
 -Wall
 -I./include/back
+-I./include/back/client
+-I./include/back/bank
 -I./include/front
 
-./src/back/accont.cpp
-./src/back/bank.cpp
-./src/back/money.cpp
-./src/back/central_bank.cpp
-./src/back/saver.cpp
-./src/back/client_user.cpp
-./src/back/client_manager.cpp
+./src/back/bank/accont.cpp
+./src/back/bank/bank.cpp
+./src/back/bank/money.cpp
+./src/back/bank/central_bank.cpp
+
+./src/back/client/client_user.cpp
+./src/back/client/client_manager.cpp
+
 ./src/back/bot_sys.cpp
+./src/back/saver.cpp
 
 ./src/front/formater.cpp
 

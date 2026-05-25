@@ -2,7 +2,7 @@
 #include <optional>
 #include <string>
 #include "accont.hpp"
-#include "bank_status.hpp"
+#include "status.hpp"
 #include "job.hpp"
 
 /*
@@ -106,8 +106,7 @@ class ClientUser {
 
         const Money& m = job.value().getSalary();
 
-        account->addMoney(m._mt.id, m._mt.symbol, m.value);
-        return SUCCESS;
+        return account->addMoney(m._mt.id, m._mt.symbol, m.value);
     }
 
 
