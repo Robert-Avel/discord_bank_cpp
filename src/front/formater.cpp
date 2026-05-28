@@ -96,9 +96,37 @@ FieldMap FinalPayLoad::formatField(const PayloadVariant& pl) {
     }
 }
 
+
 FinalPayLoad::FinalPayLoad(const BasePayLoad& bpl) {
     this->operation = operation_PT.at(bpl.operation);
     this->status = status_PT.at(bpl.status);
     this->message = messages_PT.at({bpl.operation, bpl.status});
     this->fields = formatField(bpl.payload);
+}
+
+
+std::string formatMention(dpp::snowflake* id, size_t qnt) {
+    std::stringstream buffer;
+    for(unsigned int i = 0; i < qnt; i++) {
+        buffer << "<@" << id->str() << "> ";
+    }
+    return buffer.str();
+}
+
+
+
+dpp::embed payloadAssembly(const FinalPayLoad& pl) {
+    dpp::embed buffer;
+    buffer.set_title(pl.operation)
+          .set_description(pl.message);
+
+    for(const auto& [name, value]: pl.fields) {
+        buffer.add_field(name, value, false);
+    }
+
+    return buffer;
+}
+
+dpp::embed payloadAssembly(const BasePayLoad& pl) {
+    return payloadAssembly(FinalPayLoad(pl));
 }

@@ -3,6 +3,66 @@
 #include <map>
 #include <vector>
 
+
+#define CMD_OPEN_BANK "abrir-banco" //OK
+#define CMD_OPEN_BANK_DESCRIPTION "Abra um novo banco neste servidor." //OK
+
+#define CMD_INIT_USER "iniciar-usuario"//OK
+#define CMD_INIT_USER_DESCRIPTION "Inicia um usuario no servidor"//OK
+
+#define CMD_INFO_BANK "ver-banco"//OK
+#define CMD_INFO_BANK_DESCRIPTION "Informações do banco"//OK
+
+#define CMD_INFO_ACCOUNT "ver-conta"//OK
+#define CMD_INFO_ACCOUNT_DESCRIPTION "Informações da conta"//OK
+
+#define CMD_NEW_MONEY "nova-moeda"
+#define CMD_NEW_MONEY_DESCRIPTION "Adiciona uma nova moeda"
+
+#define CMD_INFO_MONEY "ver-moeda"
+#define CMD_INFO_MONEY_DESCRIPTION "Informações da Moeda"
+
+#define CMD_PAYMENT "pagar"
+#define CMD_PAYMENT_DESCRIPTION "Saca um valor"
+
+#define CMD_DEPOSIT "depositar"
+#define CMD_DEPOSIT_DESCRIPTION "Deposita um valor na conta do usuário"
+
+#define CMD_TRANSFERENCE "transferir"
+#define CMD_TRANSFERENCE_DESCRIPTION "Trasfere um valor para um usuário"
+
+#define CMD_HIRE_USER "contratar-usuario"
+#define CMD_HIRE_USER_DESCRIPTION "Contrata um novo usuário para o sistema"
+
+#define CMD_FIRE_USER "demitir-usuario"
+#define CMD_FIRE_USER_DESCRIPTION "Demite um usuário do sistema"
+
+#define CMD_PAY_CLIENT "pagar-salario"
+#define CMD_PAY_CLIENT_DESCRIPTION "Paga um usuário pertencente ao sistema"
+
+
+
+#define ARG_USER_NAME "nome-de-usuário"
+#define ARG_USER_NAME_DESCRIPTION "O nome global"
+
+#define ARG_USER_ID "identificador-de-usuário"
+#define ARG_USER_ID_DESCRIPTION "Identificador do Usuário"
+
+#define ARG_MONEY_VALUE "valor"
+#define ARG_MONEY_VALUE_DESCRIPTION "O Valor da monetário da Operação"
+
+#define ARG_MONEY_ID "id-da-moeda"
+#define ARG_MONEY_ID_DESCRIPTION "O nome ou Identificador da moeda"
+
+#define ARG_MONEY_SYMBOL "simbolo-da-moeda"
+#define ARG_MONEY_SYMBOL_DESCRIPTION "O Simbolo da moeda"
+
+#define ARG_RECEIVER_ID "id-destinatario"
+#define ARG_RECEIVER_ID_DESCRIPTION "Identificador de quem vai receber"
+
+#define ARG_PAYER_ID "id-pagador"
+#define ARG_PAYER_ID_DESCRIPTION "Identificador de quem vai pagar"
+
 using MsgKey = std::pair<Operation, Status>;
 
 

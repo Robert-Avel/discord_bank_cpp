@@ -4,6 +4,7 @@
 #include "client_manager.hpp"
 #include <string>
 
+
 class DiogoBotSys {
     private:
         /*

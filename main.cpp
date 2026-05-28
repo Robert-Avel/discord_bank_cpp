@@ -8,43 +8,16 @@
 #include <dpp/message.h>
 #include <dpp/once.h>
 #include <dpp/snowflake.h>
-#include "base_payload.hpp"
 #include "bot_sys.hpp"
 #include "formater.hpp"
+#include "template_PT.hpp"
 #include <ctime>
-#include <sstream>
 #define SAVE_BREAK 1800
 
 
 static DiogoBotSys sys;
 static std::time_t last_saved = 0;
 
-
-std::string formatMention(dpp::snowflake* id, size_t qnt) {
-    std::stringstream buffer;
-    for(unsigned int i = 0; i < qnt; i++) {
-        buffer << "<@" << id->str() << "> ";
-    }
-    return buffer.str();
-}
-
-
-
-dpp::embed payloadAssembly(const FinalPayLoad& pl) {
-    dpp::embed buffer;
-    buffer.set_title(pl.operation)
-          .set_description(pl.message);
-
-    for(const auto& [name, value]: pl.fields) {
-        buffer.add_field(name, value, false);
-    }
-
-    return buffer;
-}
-
-dpp::embed payloadAssembly(const BasePayLoad& pl) {
-    return payloadAssembly(FinalPayLoad(pl));
-}
 
 int main() {
     std::string token = getenv("BOT_TOKEN");
@@ -55,57 +28,57 @@ int main() {
 
     /* The event is fired when someone issues your commands */
     bot.on_slashcommand([](const dpp::slashcommand_t& event) {
-        if(event.command.get_command_name() == "abrir-banco") {
+        if(event.command.get_command_name() == CMD_OPEN_BANK) {
             event.reply(
                 payloadAssembly(
                     sys.open_bank(event.command.guild_id.str())
                 )
             );
         }
-        else if(event.command.get_command_name() == "iniciar-usuario") {
+        else if(event.command.get_command_name() == CMD_INIT_USER) {
             event.reply(
                 payloadAssembly(
                     sys.init_user(event.command.guild_id.str(), event.command.usr.id.str(),
-                        std::get<std::string>(event.get_parameter("nome-de-usuario"))
+                        std::get<std::string>(event.get_parameter(ARG_USER_NAME))
                     )
                 )
             );
         }
-        else if(event.command.get_command_name() == "ver-banco") {
+        else if(event.command.get_command_name() == CMD_INFO_BANK) {
             event.reply(
                 payloadAssembly(
                     sys.bank_info(event.command.guild_id.str())
                 )
             );
         }
-        else if(event.command.get_command_name() == "ver-conta") {
+        else if(event.command.get_command_name() == CMD_INFO_ACCOUNT) {
             event.reply(
                 payloadAssembly(
                     sys.user_info(event.command.guild_id.str(), event.command.usr.id.str())
                 )
             );
         }
-        else if(event.command.get_command_name() == "nova-moeda") {
+        else if(event.command.get_command_name() == CMD_NEW_MONEY) {
             event.reply(
                 payloadAssembly(
                     sys.money_new(event.command.guild_id.str(),
-                        std::get<std::string>(event.get_parameter("id-da-moeda")),
-                        std::get<std::string>(event.get_parameter("simbolo-da-moeda"))
+                        std::get<std::string>(event.get_parameter(ARG_MONEY_ID)),
+                        std::get<std::string>(event.get_parameter(ARG_MONEY_SYMBOL))
                     )
                 )
             );
         }
-        else if(event.command.get_command_name() == "ver-moeda") {
+        else if(event.command.get_command_name() == CMD_INFO_MONEY) {
             event.reply(
                 payloadAssembly(
                     sys.money_info(event.command.guild_id.str(),
-                        std::get<std::string>(event.get_parameter("id-da-moeda"))
+                        std::get<std::string>(event.get_parameter(ARG_MONEY_ID))
                     )
                 )
             );
         }
-        else if(event.command.get_command_name() == "depositar") {
-            int64_t value = std::get<int64_t>(event.get_parameter("valor"));
+        else if(event.command.get_command_name() == CMD_DEPOSIT) {
+            int64_t value = std::get<int64_t>(event.get_parameter(ARG_MONEY_VALUE));
             if (value < 1) {
                 event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
                 return;
@@ -114,14 +87,14 @@ int main() {
             event.reply(
                 payloadAssembly(
                     sys.deposit(event.command.guild_id.str(),
-                        std::get<dpp::snowflake>(event.get_parameter("id-destinatario")).str(),                        std::get<std::string>(event.get_parameter("id-da-moeda")),
+                        std::get<dpp::snowflake>(event.get_parameter(ARG_RECEIVER_ID)).str(),                        std::get<std::string>(event.get_parameter("id-da-moeda")),
                         value
                     )
                 )
             );
         }
-        else if(event.command.get_command_name() == "sacar") {
-            int64_t value = std::get<int64_t>(event.get_parameter("valor"));
+        else if(event.command.get_command_name() == CMD_PAYMENT) {
+            int64_t value = std::get<int64_t>(event.get_parameter(ARG_MONEY_VALUE));
             if (value < 1) {
                 event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
                 return;
@@ -130,14 +103,14 @@ int main() {
                 payloadAssembly(
                     sys.pay(event.command.guild_id.str(),
                         value,
-                        std::get<std::string>(event.get_parameter("id-da-moeda")),
+                        std::get<std::string>(event.get_parameter(ARG_MONEY_ID)),
                         event.command.usr.id.str()
                     )
                 )
             );
         }
-        else if(event.command.get_command_name() == "transferir") {
-            int64_t value = std::get<int64_t>(event.get_parameter("valor"));
+        else if(event.command.get_command_name() == CMD_TRANSFERENCE) {
+            int64_t value = std::get<int64_t>(event.get_parameter(ARG_MONEY_VALUE));
             if (value < 1) {
                 event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
                 return;
@@ -146,9 +119,9 @@ int main() {
                 payloadAssembly(
                     sys.transference(event.command.guild_id.str(),
                         value,
-                        std::get<std::string>(event.get_parameter("id-da-moeda")),
+                        std::get<std::string>(event.get_parameter(ARG_MONEY_ID)),
                         event.command.usr.id.str(),
-                        std::get<dpp::snowflake>(event.get_parameter("id-destinatario")).str()
+                        std::get<dpp::snowflake>(event.get_parameter(ARG_RECEIVER_ID)).str()
                     )
                 )
             );
@@ -168,32 +141,32 @@ int main() {
 
         if (dpp::run_once<struct register_bot_commands>()) {
             //bot.global_bulk_command_delete();
-            bot.global_command_create(dpp::slashcommand("abrir-banco", "Abra um novo banco neste servidor.", bot.me.id));
-            bot.global_command_create(dpp::slashcommand("iniciar-usuario", "Inicia um usuario no servidor", bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, "nome-de-usuario", "O nome global", true))
+            bot.global_command_create(dpp::slashcommand(CMD_OPEN_BANK, CMD_OPEN_BANK_DESCRIPTION, bot.me.id));
+            bot.global_command_create(dpp::slashcommand(CMD_INIT_USER, CMD_INIT_USER_DESCRIPTION, bot.me.id)
+                .add_option(dpp::command_option(dpp::co_string, ARG_USER_NAME, ARG_USER_NAME_DESCRIPTION, true))
             );
-            bot.global_command_create(dpp::slashcommand("ver-banco", "Informações do banco", bot.me.id));
-            bot.global_command_create(dpp::slashcommand("ver-conta", "Informações da conta", bot.me.id));
-            bot.global_command_create(dpp::slashcommand("nova-moeda", "Adiciona uma nova moeda", bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
-                .add_option(dpp::command_option(dpp::co_string, "simbolo-da-moeda", "O Simbolo da moeda", true))
+            bot.global_command_create(dpp::slashcommand(CMD_INFO_BANK, CMD_INFO_BANK_DESCRIPTION, bot.me.id));
+            bot.global_command_create(dpp::slashcommand(CMD_INFO_ACCOUNT, CMD_INFO_ACCOUNT_DESCRIPTION, bot.me.id));
+            bot.global_command_create(dpp::slashcommand(CMD_NEW_MONEY, CMD_NEW_MONEY_DESCRIPTION, bot.me.id)
+                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
+                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_SYMBOL, ARG_MONEY_SYMBOL_DESCRIPTION, true))
             );
-            bot.global_command_create(dpp::slashcommand("ver-moeda", "Informações da Moeda", bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
+            bot.global_command_create(dpp::slashcommand(CMD_INFO_MONEY, CMD_INFO_MONEY_DESCRIPTION, bot.me.id)
+                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
             );
-            bot.global_command_create(dpp::slashcommand("depositar", "Deposita um valor na conta do usuário", bot.me.id)
-                .add_option(dpp::command_option(dpp::co_user, "id-destinatario", "identificador de quem vai receber", true))
-                .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
-                .add_option(dpp::command_option(dpp::co_integer, "valor", "valor da transação", true))
+            bot.global_command_create(dpp::slashcommand(CMD_DEPOSIT, CMD_DEPOSIT_DESCRIPTION, bot.me.id)
+                .add_option(dpp::command_option(dpp::co_user, ARG_RECEIVER_ID, ARG_RECEIVER_ID_DESCRIPTION, true))
+                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
+                .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true))
             );
-            bot.global_command_create(dpp::slashcommand("sacar", "Saca um valor", bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
-                .add_option(dpp::command_option(dpp::co_integer, "valor", "valor da transação", true))
+            bot.global_command_create(dpp::slashcommand(CMD_PAYMENT, CMD_PAYMENT_DESCRIPTION, bot.me.id)
+                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
+                .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true))
             );
-            bot.global_command_create(dpp::slashcommand("transferir", "Trasfere um valor para um usuário", bot.me.id)
-                .add_option(dpp::command_option(dpp::co_user, "id-destinatario", "identificador de quem vai receber", true))
-                .add_option(dpp::command_option(dpp::co_string, "id-da-moeda", "O nome ou Identificador", true))
-                .add_option(dpp::command_option(dpp::co_integer, "valor", "valor da transação", true))
+            bot.global_command_create(dpp::slashcommand(CMD_TRANSFERENCE, CMD_TRANSFERENCE_DESCRIPTION, bot.me.id)
+                .add_option(dpp::command_option(dpp::co_user, ARG_RECEIVER_ID, ARG_RECEIVER_ID_DESCRIPTION, true))
+                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
+                .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true))
             );
         }
     });

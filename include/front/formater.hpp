@@ -1,5 +1,6 @@
 #pragma once
 #include "base_payload.hpp"
+#include <dpp/message.h>
 #include <map>
 #include <string>
 using FieldMap = std::map<std::string, std::string>;
@@ -16,3 +17,10 @@ class FinalPayLoad {
 
     FinalPayLoad(const BasePayLoad& bpl);
 };
+
+
+
+std::string formatMention(dpp::snowflake* id, size_t qnt);
+
+dpp::embed payloadAssembly(const FinalPayLoad& pl);
+dpp::embed payloadAssembly(const BasePayLoad& pl);
