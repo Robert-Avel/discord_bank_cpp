@@ -1,11 +1,16 @@
+#pragma once
+
 #include "accont.hpp"
 #include "base_payload.hpp"
 #include "central_bank.hpp"
 #include "client_manager.hpp"
+#include <mutex>
 #include <string>
 
 
 class DiogoBotSys {
+
+    std::mutex mutex;
     private:
         /*
          * Link All accounts to their client to quick acess

@@ -5,7 +5,9 @@
 #include "base_payload.hpp"
 #include "client_user.hpp"
 #include "money.hpp"
+#include "gtest/gtest.h"
 #include <iostream>
+#include <mutex>
 #include <string>
 
 
@@ -29,6 +31,8 @@ void DiogoBotSys::linkAccounts() {
 
 
 BasePayLoad DiogoBotSys::open_bank(std::string bank_id) {
+    std::lock_guard<std::mutex> lock(mutex);
+
     Operation op = OPEN_BANK;
     Status result = central_bank.openBank(bank_id);
     const Bank* b = central_bank.getBank(bank_id);
@@ -41,6 +45,9 @@ BasePayLoad DiogoBotSys::open_bank(std::string bank_id) {
 
 
 BasePayLoad DiogoBotSys::init_user(std::string bank_id, std::string user_id, std::string user_name) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = INIT_USER;
 
     Bank* b = central_bank.getBank(bank_id);
@@ -54,6 +61,9 @@ BasePayLoad DiogoBotSys::init_user(std::string bank_id, std::string user_id, std
 }
 
 BasePayLoad DiogoBotSys::bank_info(std::string bank_id) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = INFO_BANK;
 
     Bank* b = central_bank.getBank(bank_id);
@@ -65,6 +75,9 @@ BasePayLoad DiogoBotSys::bank_info(std::string bank_id) {
 
 
 BasePayLoad DiogoBotSys::user_info(std::string bank_id, std::string user_id) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = INFO_ACCOUNT;
 
     Bank* b = central_bank.getBank(bank_id);
@@ -87,6 +100,9 @@ BasePayLoad DiogoBotSys::user_info(std::string bank_id, std::string user_id) {
 
 
 BasePayLoad DiogoBotSys::money_new(std::string bank_id, std::string money_id, std::string money_symbol) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = NEW_MONEY;
 
     Bank* b = central_bank.getBank(bank_id);
@@ -104,6 +120,9 @@ BasePayLoad DiogoBotSys::money_new(std::string bank_id, std::string money_id, st
 }
 
 BasePayLoad DiogoBotSys::money_info(std::string bank_id, std::string money_id) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = INFO_MONEY;
 
     Bank* b = central_bank.getBank(bank_id);
@@ -119,6 +138,9 @@ BasePayLoad DiogoBotSys::money_info(std::string bank_id, std::string money_id) {
 
 
 BasePayLoad DiogoBotSys::deposit(std::string bank_id, std::string to_id, std::string money_id, cents value) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = DEPOSIT;
 
     Bank* b = central_bank.getBank(bank_id);
@@ -147,6 +169,9 @@ BasePayLoad DiogoBotSys::deposit(std::string bank_id, std::string to_id, std::st
 
 
 BasePayLoad DiogoBotSys::pay(std::string bank_id, cents value, std::string money_id, std::string from_id) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = PAYMENT;
 
     Bank* b = central_bank.getBank(bank_id);
@@ -174,6 +199,9 @@ BasePayLoad DiogoBotSys::pay(std::string bank_id, cents value, std::string money
 }
 
 BasePayLoad DiogoBotSys::transference(std::string bank_id, cents value, std::string money_id, std::string from_id, std::string to_id) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = TRANSFERENCE;
 
     Bank* b = central_bank.getBank(bank_id);
@@ -207,6 +235,9 @@ BasePayLoad DiogoBotSys::transference(std::string bank_id, cents value, std::str
 
 
 BasePayLoad DiogoBotSys::hire_user(std::string bank_id, std::string client_id, std::string role_name, std::string money_id, cents salary) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = HIRE_USER;
 
     Bank* b = this->central_bank.getBank(bank_id);
@@ -230,6 +261,9 @@ BasePayLoad DiogoBotSys::hire_user(std::string bank_id, std::string client_id, s
 
 
 BasePayLoad DiogoBotSys::fire_user(std::string bank_id, std::string client_id) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = FIRE_USER;
 
     Bank* b = this->central_bank.getBank(bank_id);
@@ -252,6 +286,9 @@ BasePayLoad DiogoBotSys::fire_user(std::string bank_id, std::string client_id) {
 
 
 BasePayLoad DiogoBotSys::pay_client(std::string bank_id, std::string client_id) {
+    std::lock_guard<std::mutex> lock(mutex);
+
+
     Operation op = PAY_CLIENT;
 
     Bank* b = this->central_bank.getBank(bank_id);

@@ -16,5 +16,6 @@
 ./src/back/saver.cpp
 
 ./src/front/formater.cpp
+./src/front/app_cmd.cpp
 
 -Wl,-rpath=/usr/local/lib

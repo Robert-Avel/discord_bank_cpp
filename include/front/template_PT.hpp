@@ -42,10 +42,10 @@
 
 
 
-#define ARG_USER_NAME "nome-de-usuário"
+#define ARG_USER_NAME "nome-de-usuario"
 #define ARG_USER_NAME_DESCRIPTION "O nome global"
 
-#define ARG_USER_ID "identificador-de-usuário"
+#define ARG_USER_ID "identificador-de-usuario"
 #define ARG_USER_ID_DESCRIPTION "Identificador do Usuário"
 
 #define ARG_MONEY_VALUE "valor"

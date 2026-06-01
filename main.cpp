@@ -7,16 +7,36 @@
 #include <dpp/intents.h>
 #include <dpp/message.h>
 #include <dpp/once.h>
+#include <dpp/scheduled_event.h>
 #include <dpp/snowflake.h>
 #include "bot_sys.hpp"
-#include "formater.hpp"
 #include "template_PT.hpp"
+#include "app_cmd.hpp"
 #include <ctime>
-#define SAVE_BREAK 1800
+#include <map>
+#include <string>
 
+#define SAVE_BREAK 1800
+typedef void (*Command) (const dpp::slashcommand_t& event, DiogoBotSys& bot);
 
 static DiogoBotSys sys;
 static std::time_t last_saved = 0;
+
+
+std::map<std::string, Command> commands = {
+    {CMD_OPEN_BANK, &cmd::open_bank},
+    {CMD_INIT_USER, &cmd::init_user},
+    {CMD_INFO_BANK, &cmd::bank_info},
+    {CMD_INFO_ACCOUNT, &cmd::user_info},
+    {CMD_NEW_MONEY, &cmd::money_new},
+    {CMD_INFO_MONEY, &cmd::money_info},
+    {CMD_DEPOSIT, &cmd::deposit},
+    {CMD_PAYMENT, &cmd::pay},
+    {CMD_TRANSFERENCE, &cmd::transference},
+    {CMD_HIRE_USER, &cmd::hire_user},
+    {CMD_FIRE_USER, &cmd::fire_user},
+    {CMD_PAY_CLIENT, &cmd::pay_client},
+};
 
 
 int main() {
@@ -26,109 +46,15 @@ int main() {
 
     bot.on_log(dpp::utility::cout_logger());
 
-    /* The event is fired when someone issues your commands */
-    bot.on_slashcommand([](const dpp::slashcommand_t& event) {
-        if(event.command.get_command_name() == CMD_OPEN_BANK) {
-            event.reply(
-                payloadAssembly(
-                    sys.open_bank(event.command.guild_id.str())
-                )
-            );
-        }
-        else if(event.command.get_command_name() == CMD_INIT_USER) {
-            event.reply(
-                payloadAssembly(
-                    sys.init_user(event.command.guild_id.str(), event.command.usr.id.str(),
-                        std::get<std::string>(event.get_parameter(ARG_USER_NAME))
-                    )
-                )
-            );
-        }
-        else if(event.command.get_command_name() == CMD_INFO_BANK) {
-            event.reply(
-                payloadAssembly(
-                    sys.bank_info(event.command.guild_id.str())
-                )
-            );
-        }
-        else if(event.command.get_command_name() == CMD_INFO_ACCOUNT) {
-            event.reply(
-                payloadAssembly(
-                    sys.user_info(event.command.guild_id.str(), event.command.usr.id.str())
-                )
-            );
-        }
-        else if(event.command.get_command_name() == CMD_NEW_MONEY) {
-            event.reply(
-                payloadAssembly(
-                    sys.money_new(event.command.guild_id.str(),
-                        std::get<std::string>(event.get_parameter(ARG_MONEY_ID)),
-                        std::get<std::string>(event.get_parameter(ARG_MONEY_SYMBOL))
-                    )
-                )
-            );
-        }
-        else if(event.command.get_command_name() == CMD_INFO_MONEY) {
-            event.reply(
-                payloadAssembly(
-                    sys.money_info(event.command.guild_id.str(),
-                        std::get<std::string>(event.get_parameter(ARG_MONEY_ID))
-                    )
-                )
-            );
-        }
-        else if(event.command.get_command_name() == CMD_DEPOSIT) {
-            int64_t value = std::get<int64_t>(event.get_parameter(ARG_MONEY_VALUE));
-            if (value < 1) {
-                event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
-                return;
-            }
 
-            event.reply(
-                payloadAssembly(
-                    sys.deposit(event.command.guild_id.str(),
-                        std::get<dpp::snowflake>(event.get_parameter(ARG_RECEIVER_ID)).str(),                        std::get<std::string>(event.get_parameter("id-da-moeda")),
-                        value
-                    )
-                )
-            );
+    bot.on_slashcommand([](const dpp::slashcommand_t& event) {
+        std::string cmd_name = event.command.get_command_name();
+
+        if (commands.find(cmd_name) == commands.end()) {
+            event.reply("Command "+cmd_name+" not found");
         }
-        else if(event.command.get_command_name() == CMD_PAYMENT) {
-            int64_t value = std::get<int64_t>(event.get_parameter(ARG_MONEY_VALUE));
-            if (value < 1) {
-                event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
-                return;
-            }
-            event.reply(
-                payloadAssembly(
-                    sys.pay(event.command.guild_id.str(),
-                        value,
-                        std::get<std::string>(event.get_parameter(ARG_MONEY_ID)),
-                        event.command.usr.id.str()
-                    )
-                )
-            );
-        }
-        else if(event.command.get_command_name() == CMD_TRANSFERENCE) {
-            int64_t value = std::get<int64_t>(event.get_parameter(ARG_MONEY_VALUE));
-            if (value < 1) {
-                event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
-                return;
-            }
-            event.reply(
-                payloadAssembly(
-                    sys.transference(event.command.guild_id.str(),
-                        value,
-                        std::get<std::string>(event.get_parameter(ARG_MONEY_ID)),
-                        event.command.usr.id.str(),
-                        std::get<dpp::snowflake>(event.get_parameter(ARG_RECEIVER_ID)).str()
-                    )
-                )
-            );
-        }
-        else {
-            event.reply("Erro ao executar o comando, talvez ele não exista ou seja um fantasma");
-        }
+        else commands.at(cmd_name)(event, sys);
+
 
         if(last_saved == 0 || std::difftime(std::time(NULL), last_saved) > SAVE_BREAK) {
            // db.save();
