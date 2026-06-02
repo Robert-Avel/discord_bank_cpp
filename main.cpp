@@ -1,5 +1,4 @@
 #include <cstddef>
-#include <cstdint>
 #include <cstdlib>
 #include <dpp/appcommand.h>
 #include <dpp/dispatcher.h>
@@ -13,8 +12,10 @@
 #include "template_PT.hpp"
 #include "app_cmd.hpp"
 #include <ctime>
+#include <iostream>
 #include <map>
 #include <string>
+#include <vector>
 
 #define SAVE_BREAK 1800
 typedef void (*Command) (const dpp::slashcommand_t& event, DiogoBotSys& bot);
@@ -66,34 +67,55 @@ int main() {
     bot.on_ready([&bot](const dpp::ready_t& event) {
 
         if (dpp::run_once<struct register_bot_commands>()) {
-            //bot.global_bulk_command_delete();
-            bot.global_command_create(dpp::slashcommand(CMD_OPEN_BANK, CMD_OPEN_BANK_DESCRIPTION, bot.me.id));
-            bot.global_command_create(dpp::slashcommand(CMD_INIT_USER, CMD_INIT_USER_DESCRIPTION, bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, ARG_USER_NAME, ARG_USER_NAME_DESCRIPTION, true))
-            );
-            bot.global_command_create(dpp::slashcommand(CMD_INFO_BANK, CMD_INFO_BANK_DESCRIPTION, bot.me.id));
-            bot.global_command_create(dpp::slashcommand(CMD_INFO_ACCOUNT, CMD_INFO_ACCOUNT_DESCRIPTION, bot.me.id));
-            bot.global_command_create(dpp::slashcommand(CMD_NEW_MONEY, CMD_NEW_MONEY_DESCRIPTION, bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
-                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_SYMBOL, ARG_MONEY_SYMBOL_DESCRIPTION, true))
-            );
-            bot.global_command_create(dpp::slashcommand(CMD_INFO_MONEY, CMD_INFO_MONEY_DESCRIPTION, bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
-            );
-            bot.global_command_create(dpp::slashcommand(CMD_DEPOSIT, CMD_DEPOSIT_DESCRIPTION, bot.me.id)
-                .add_option(dpp::command_option(dpp::co_user, ARG_RECEIVER_ID, ARG_RECEIVER_ID_DESCRIPTION, true))
-                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
-                .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true))
-            );
-            bot.global_command_create(dpp::slashcommand(CMD_PAYMENT, CMD_PAYMENT_DESCRIPTION, bot.me.id)
-                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
-                .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true))
-            );
-            bot.global_command_create(dpp::slashcommand(CMD_TRANSFERENCE, CMD_TRANSFERENCE_DESCRIPTION, bot.me.id)
-                .add_option(dpp::command_option(dpp::co_user, ARG_RECEIVER_ID, ARG_RECEIVER_ID_DESCRIPTION, true))
-                .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
-                .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true))
-            );
+            std::vector<dpp::slashcommand> COMMANDS = {
+                dpp::slashcommand(CMD_OPEN_BANK, CMD_OPEN_BANK_DESCRIPTION, bot.me.id),
+                dpp::slashcommand(CMD_INIT_USER, CMD_INIT_USER_DESCRIPTION, bot.me.id)
+                    .add_option(dpp::command_option(dpp::co_string, ARG_USER_NAME, ARG_USER_NAME_DESCRIPTION, true)),
+                dpp::slashcommand(CMD_INFO_BANK, CMD_INFO_BANK_DESCRIPTION, bot.me.id),
+                dpp::slashcommand(CMD_INFO_ACCOUNT, CMD_INFO_ACCOUNT_DESCRIPTION, bot.me.id),
+                dpp::slashcommand(CMD_NEW_MONEY, CMD_NEW_MONEY_DESCRIPTION, bot.me.id)
+                    .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
+                    .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_SYMBOL, ARG_MONEY_SYMBOL_DESCRIPTION, true)),
+                dpp::slashcommand(CMD_INFO_MONEY, CMD_INFO_MONEY_DESCRIPTION, bot.me.id)
+                    .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true)),
+                dpp::slashcommand(CMD_DEPOSIT, CMD_DEPOSIT_DESCRIPTION, bot.me.id)
+                    .add_option(dpp::command_option(dpp::co_user, ARG_RECEIVER_ID, ARG_RECEIVER_ID_DESCRIPTION, true))
+                    .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
+                    .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true)),
+                dpp::slashcommand(CMD_PAYMENT, CMD_PAYMENT_DESCRIPTION, bot.me.id)
+                    .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
+                    .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true)),
+                dpp::slashcommand(CMD_TRANSFERENCE, CMD_TRANSFERENCE_DESCRIPTION, bot.me.id)
+                    .add_option(dpp::command_option(dpp::co_user, ARG_RECEIVER_ID, ARG_RECEIVER_ID_DESCRIPTION, true))
+                    .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
+                    .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true))
+            };
+
+
+            #ifdef SERVER_ID
+                std::string server_id = SERVER_ID;
+                if(server_id.size() <= 1 || server_id.empty()) {
+                    exit(-1);
+                }
+            #endif
+
+            #if defined(DEBUG_MODE)
+                std::cout << "Debug Mode..." << "\n";
+                bot.guild_bulk_command_create(COMMANDS, std::stoull(server_id));
+
+            #elif defined(RELEASE_MODE)
+                std::cout << "Release Mode..." << "\n";
+                bot.global_bulk_command_create(COMMANDS);
+
+
+            #elif defined(CLEAR_MODE)
+                std::cout << "Clear Mode..." << "\n";
+                bot.global_bulk_command_delete();
+                bot.guild_bulk_command_delete(std::stoull(server_id));
+
+            #else
+                exit(-1);
+            #endif
         }
     });
 

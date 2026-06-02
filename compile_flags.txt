@@ -1,21 +1,9 @@
--Wall
 -I./include/back
 -I./include/back/client
 -I./include/back/bank
 -I./include/front
 
-./src/back/bank/accont.cpp
-./src/back/bank/bank.cpp
-./src/back/bank/money.cpp
-./src/back/bank/central_bank.cpp
-
-./src/back/client/client_user.cpp
-./src/back/client/client_manager.cpp
-
-./src/back/bot_sys.cpp
-./src/back/saver.cpp
-
-./src/front/formater.cpp
-./src/front/app_cmd.cpp
-
--Wl,-rpath=/usr/local/lib
+-DSERVER_ID=""
+-DDEBUG_MODE
+-DRELEASE_MODE
+-DCLEAR_MODE

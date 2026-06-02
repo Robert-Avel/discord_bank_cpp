@@ -4,42 +4,51 @@
 #include <vector>
 
 
-#define CMD_OPEN_BANK "abrir-banco" //OK
+#define CMD_BANK "banco"
+#define CMD_USER "usuario"
+#define CMD_ACCOUNT "conta"
+#define CMD_JOB "emprego"
+#define CMD_MONEY "moeda"
+
+
+#define NEW_SUB_COMMAND(CMD, SUB_CMD) CMD "-" SUB_CMD
+
+
+#define CMD_OPEN_BANK NEW_SUB_COMMAND(CMD_BANK, "abrir") //OK
 #define CMD_OPEN_BANK_DESCRIPTION "Abra um novo banco neste servidor." //OK
 
-#define CMD_INIT_USER "iniciar-usuario"//OK
+#define CMD_INIT_USER NEW_SUB_COMMAND(CMD_USER, "iniciar")//OK
 #define CMD_INIT_USER_DESCRIPTION "Inicia um usuario no servidor"//OK
 
-#define CMD_INFO_BANK "ver-banco"//OK
+#define CMD_INFO_BANK NEW_SUB_COMMAND(CMD_BANK, "info")//OK
 #define CMD_INFO_BANK_DESCRIPTION "Informações do banco"//OK
 
-#define CMD_INFO_ACCOUNT "ver-conta"//OK
+#define CMD_INFO_ACCOUNT NEW_SUB_COMMAND(CMD_ACCOUNT, "info")//OK
 #define CMD_INFO_ACCOUNT_DESCRIPTION "Informações da conta"//OK
 
-#define CMD_NEW_MONEY "nova-moeda"
+#define CMD_NEW_MONEY NEW_SUB_COMMAND(CMD_MONEY, "novo")
 #define CMD_NEW_MONEY_DESCRIPTION "Adiciona uma nova moeda"
 
-#define CMD_INFO_MONEY "ver-moeda"
+#define CMD_INFO_MONEY NEW_SUB_COMMAND(CMD_MONEY, "info")
 #define CMD_INFO_MONEY_DESCRIPTION "Informações da Moeda"
 
-#define CMD_PAYMENT "pagar"
+#define CMD_PAYMENT NEW_SUB_COMMAND(CMD_ACCOUNT, "pagar")
 #define CMD_PAYMENT_DESCRIPTION "Saca um valor"
 
-#define CMD_DEPOSIT "depositar"
+#define CMD_DEPOSIT NEW_SUB_COMMAND(CMD_ACCOUNT, "depositar")
 #define CMD_DEPOSIT_DESCRIPTION "Deposita um valor na conta do usuário"
 
-#define CMD_TRANSFERENCE "transferir"
+#define CMD_TRANSFERENCE NEW_SUB_COMMAND(CMD_ACCOUNT, "transferir")
 #define CMD_TRANSFERENCE_DESCRIPTION "Trasfere um valor para um usuário"
 
-#define CMD_HIRE_USER "contratar-usuario"
+#define CMD_HIRE_USER NEW_SUB_COMMAND(CMD_JOB, "contratar")
 #define CMD_HIRE_USER_DESCRIPTION "Contrata um novo usuário para o sistema"
 
-#define CMD_FIRE_USER "demitir-usuario"
+#define CMD_FIRE_USER NEW_SUB_COMMAND(CMD_JOB, "demitir")
 #define CMD_FIRE_USER_DESCRIPTION "Demite um usuário do sistema"
 
-#define CMD_PAY_CLIENT "pagar-salario"
+#define CMD_PAY_CLIENT NEW_SUB_COMMAND(CMD_JOB, "salario")
 #define CMD_PAY_CLIENT_DESCRIPTION "Paga um usuário pertencente ao sistema"
-
 
 
 #define ARG_USER_NAME "nome-de-usuario"
