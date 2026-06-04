@@ -4,11 +4,11 @@
 #include <algorithm>
 #include <sstream>
 
-Money* Account::_getMoney(std::string money_id) {
+Money* Account::_getMoney(std::string money_id) const {
     auto getter = balances.begin();
     while (getter != balances.end()) {
         if(getter->_mt.id == money_id) {
-            return &*getter;
+            return const_cast<Money*>(&*getter);
         }
         getter++;
     }
@@ -26,6 +26,7 @@ Account::Account(std::string id_): balances() {
 }
 
 std::string Account::getID() const {return id;}
+
 
 const std::vector<Money> Account::getBalances() const {return balances;}
 

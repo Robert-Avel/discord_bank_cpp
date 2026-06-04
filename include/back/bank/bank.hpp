@@ -35,7 +35,7 @@ class Bank {
 
     @return Ponteiro para a conta se encontrada; caso contrário, retorna nullptr.
     */
-    Account* getAccont(const std::string id);
+    Account* getAccont(const std::string id) const;
 
     /*
     @brief Obtém uma cópia constante do vetor de todas as contas.
@@ -146,9 +146,12 @@ class Bank {
     Status newClient(const std::string& id, const std::string& global_name);
 
 
-    ClientUser* getClient(const std::string& id) {
+    ClientUser* getClient(const std::string& id) const {
         return clients.getClient(id);
     }
+
+
+    ClientManager getClientData() const {return clients;}
 
 
     Status linkAccount(const std::string& id);

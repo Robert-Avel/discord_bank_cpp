@@ -2,6 +2,8 @@
 #include "base_payload.hpp"
 #include "formater.hpp"
 #include "template_PT.hpp"
+#include <dpp/snowflake.h>
+#include <string>
 
 
 inline static void eventReply(const dpp::slashcommand_t& event, BasePayLoad pl) {
@@ -119,13 +121,40 @@ void cmd::transference(const dpp::slashcommand_t& event, DiogoBotSys& bot) {
 }
 
 void cmd::hire_user(const dpp::slashcommand_t& event, DiogoBotSys& bot) {
+    int64_t value = std::get<int64_t>(event.get_parameter(ARG_MONEY_VALUE));
+    if (value < 1) {
+        event.reply(dpp::message("O Valor deve ser positivo").set_flags(dpp::m_ephemeral));
+        return;
+    }
 
+    eventReply(
+        event,
+        bot.hire_user(
+            event.command.guild_id.str(),
+            std::get<dpp::snowflake>(event.get_parameter(ARG_USER_NAME)).str(),
+            std::get<std::string>(event.get_parameter(ARG_JOB_NAME)),
+            std::get<std::string>(event.get_parameter(ARG_MONEY_ID)),
+            value
+        )
+    );
 }
 
 void cmd::fire_user(const dpp::slashcommand_t& event, DiogoBotSys& bot) {
-
+    eventReply(
+        event,
+        bot.fire_user(
+            event.command.guild_id.str(),
+            std::get<dpp::snowflake>(event.get_parameter(ARG_USER_NAME)).str()
+        )
+    );
 }
 
 void cmd::pay_client(const dpp::slashcommand_t& event, DiogoBotSys& bot) {
-
+    eventReply(
+        event,
+        bot.pay_client(
+            event.command.guild_id.str(),
+            event.command.usr.id.str()
+        )
+    );
 }

@@ -3,7 +3,6 @@
 #include "accont.hpp"
 #include "base_payload.hpp"
 #include "central_bank.hpp"
-#include "client_manager.hpp"
 #include <mutex>
 #include <string>
 
@@ -29,9 +28,8 @@ class DiogoBotSys {
 
     public:
         CentralBank central_bank;
-        ClientManager clients;
 
-        DiogoBotSys(): central_bank(), clients() {};
+        DiogoBotSys(): central_bank() {};
 
 
         BasePayLoad open_bank(std::string bank_id);

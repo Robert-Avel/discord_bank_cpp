@@ -13,7 +13,7 @@ class Account {
      * @param money_id Identificador da moeda a ser localizada.
      * @return Ponteiro para o objeto Money correspondente, ou nullptr se não encontrado.
      */
-    Money* _getMoney(std::string money_id);
+    Money* _getMoney(std::string money_id) const;
 
     public:
     /**

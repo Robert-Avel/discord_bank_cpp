@@ -72,6 +72,10 @@
 #define ARG_PAYER_ID "id-pagador"
 #define ARG_PAYER_ID_DESCRIPTION "Identificador de quem vai pagar"
 
+
+#define ARG_JOB_NAME "nome-do-trabalho"
+#define ARG_JOB_NAME_DESCRIPTION "O Nome do trabalho a ser atribuido"
+
 using MsgKey = std::pair<Operation, Status>;
 
 

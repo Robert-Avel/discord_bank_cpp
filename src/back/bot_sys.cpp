@@ -5,28 +5,21 @@
 #include "base_payload.hpp"
 #include "client_user.hpp"
 #include "money.hpp"
-#include "gtest/gtest.h"
-#include <iostream>
 #include <mutex>
 #include <string>
 
 
 void DiogoBotSys::linkAccounts() {
-    for(ClientUser& c: clients.getAllClient()) {
-        Bank* b = central_bank.getBank(c.getBankID());
-        if (b == nullptr) {
-            std::cout << "Link Error, Bank Not found => " << c.getUserID();
-            continue;
+    for(const Bank& b: *central_bank.getBankData()) {
+        for(ClientUser& cu: b.getClientData().getAllClient()) {
+            Account* a = b.getAccont(cu.getUserID());
+            if(a != nullptr) {
+                cu.linkAccount(*a);
+            }
         }
-        Account* a = b->getAccont(c.getUserID());
-        if (a == nullptr) {
-            std::cout << "Link Error, Account Not found => " << c.getUserID();
-            continue;
-        }
-
-        c.linkAccount(*a);
     }
 }
+
 
 
 
@@ -68,7 +61,7 @@ BasePayLoad DiogoBotSys::bank_info(std::string bank_id) {
 
     Bank* b = central_bank.getBank(bank_id);
     if (b == nullptr) {
-        return {op, NOT_FOUND, bank_id};
+        return {op, BANK_NOT_FOUND, bank_id};
     }
     return {op, SUCCESS, payload::Bank{b->getID(), b->getAccontN()}};
 }
@@ -244,7 +237,7 @@ BasePayLoad DiogoBotSys::hire_user(std::string bank_id, std::string client_id, s
     if(b == nullptr) {return {op, BANK_NOT_FOUND, bank_id};}
 
 
-    ClientUser* cu = this->clients.getClient(client_id);
+    ClientUser* cu = b->getClient(client_id);
     if(cu == nullptr) {return {op, CLIENT_NOT_FOUND, client_id};}
 
     MoneyType* m = b->getMoney(money_id);
@@ -270,7 +263,7 @@ BasePayLoad DiogoBotSys::fire_user(std::string bank_id, std::string client_id) {
     if(b == nullptr) {return {op, BANK_NOT_FOUND, bank_id};}
 
 
-    ClientUser* cu = this->clients.getClient(client_id);
+    ClientUser* cu = b->getClient(client_id);
     if(cu == nullptr) {return {op, CLIENT_NOT_FOUND, client_id};}
 
     const ImprovisedJob* job = cu->getJob();
@@ -295,7 +288,7 @@ BasePayLoad DiogoBotSys::pay_client(std::string bank_id, std::string client_id) 
     if(b == nullptr) {return {op, BANK_NOT_FOUND, bank_id};}
 
 
-    ClientUser* cu = this->clients.getClient(client_id);
+    ClientUser* cu = b->getClient(client_id);
     if(cu == nullptr) {return {op, CLIENT_NOT_FOUND, client_id};}
 
     const ImprovisedJob* job = cu->getJob();

@@ -7,7 +7,7 @@ INCLUDES := \
 -I./include/back/bank \
 -I./include/front \
 
-VERSION := 0.1.0
+VERSION := 0.2.0
 
 DEPENDENCE := $(shell pkg-config --cflags --libs dpp)
 
