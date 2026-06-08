@@ -56,5 +56,6 @@ Status ClientUser::salaryPay() {
 
     const Money& m = job.value().getSalary();
 
+    updateLastSalay();
     return account->addMoney(m._mt.id, m._mt.symbol, m.value);
 }

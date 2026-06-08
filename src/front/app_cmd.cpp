@@ -4,6 +4,7 @@
 #include "template_PT.hpp"
 #include <dpp/snowflake.h>
 #include <string>
+#include <variant>
 
 
 inline static void eventReply(const dpp::slashcommand_t& event, BasePayLoad pl) {
@@ -40,11 +41,19 @@ void cmd::bank_info(const dpp::slashcommand_t& event, DiogoBotSys& bot) {
 }
 
 void cmd::user_info(const dpp::slashcommand_t& event, DiogoBotSys& bot) {
+    dpp::snowflake user_select;
+
+    auto param = event.get_parameter(ARG_USER_NAME);
+    if(std::holds_alternative<std::monostate>(param)) {
+        user_select = event.command.usr.id.str();
+    } else user_select = std::get<dpp::snowflake>(param);
+
+
     eventReply(
         event,
         bot.user_info(
             event.command.guild_id.str(),
-            event.command.usr.id.str()
+            user_select.str()
         )
     );
 }

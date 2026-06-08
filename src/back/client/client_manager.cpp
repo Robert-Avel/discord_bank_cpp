@@ -18,12 +18,12 @@ Status ClientManager::loadClient(const ClientUser& c) {
     return SUCCESS;
 }
 
-ClientUser* ClientManager::getClient(const std::string& id) const {
+ClientUser* ClientManager::getClient(const std::string& id) {
     auto get = std::find_if(clients.begin(), clients.end(),
         [&id](ClientUser& c) {return c.getUserID() == id;});
 
     if (get == clients.end()) {return nullptr;}
-    return const_cast<ClientUser*>(&*get);
+    return &(*get);
 }
 
 Status ClientManager::removeClient(const std::string& id) {

@@ -13,5 +13,6 @@ enum Status {
     PAYER_NOT_FOUND,
     NO_JOB,
     CLIENT_NOT_FOUND,
-    BALANCE_IN_MAX
+    BALANCE_IN_MAX,
+    IN_COOLDOWN
 };

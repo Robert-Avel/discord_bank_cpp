@@ -58,6 +58,7 @@ namespace payload {
         std::string id;
         std::string bank_id;
         std::string balances;
+        std::string job;
     };
 }
 

@@ -38,7 +38,7 @@ class ClientManager {
      *
      * @return A pointer to the Client User, or nullptr if not found
      */
-    ClientUser* getClient(const std::string& id) const;
+    ClientUser* getClient(const std::string& id);
 
     /*Get a Iterator of Clients from begin */
     std::vector<ClientUser>& getAllClient() {return clients;}

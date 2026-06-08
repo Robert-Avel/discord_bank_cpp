@@ -5,6 +5,7 @@
 #include "base_payload.hpp"
 #include "client_user.hpp"
 #include "money.hpp"
+#include <ctime>
 #include <mutex>
 #include <string>
 
@@ -19,8 +20,6 @@ void DiogoBotSys::linkAccounts() {
         }
     }
 }
-
-
 
 
 BasePayLoad DiogoBotSys::open_bank(std::string bank_id) {
@@ -86,8 +85,11 @@ BasePayLoad DiogoBotSys::user_info(std::string bank_id, std::string user_id) {
         return {op, ACCOUNT_NOT_FOUND, user_id};
     }
 
+    std::string job_info = (c->getJob() ? c->getJob()->getJobName(): "N/A");
+
+
     return {op, SUCCESS,
-        payload::Client{c->getGlobalName(), user_id, bank_id, c->getAccount()->formatBalance()}
+        payload::Client{c->getGlobalName(), user_id, bank_id, c->getAccount()->formatBalance(), job_info}
     };
 }
 
@@ -293,6 +295,16 @@ BasePayLoad DiogoBotSys::pay_client(std::string bank_id, std::string client_id) 
 
     const ImprovisedJob* job = cu->getJob();
     if(job == nullptr) {return {op, NO_JOB, client_id};}
+
+
+    if(!cu->canBPayed()) {
+        time_t next_pay = cu->getLastPay() + DAY_T;
+        return {
+            op,
+            IN_COOLDOWN,
+            std::string(std::ctime(&next_pay))
+        };
+    }
 
     return {
         op,

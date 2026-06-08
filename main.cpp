@@ -67,35 +67,48 @@ int main() {
     bot.on_ready([&bot](const dpp::ready_t& event) {
 
         if (dpp::run_once<struct register_bot_commands>()) {
+
             std::vector<dpp::slashcommand> COMMANDS = {
                 dpp::slashcommand(CMD_OPEN_BANK, CMD_OPEN_BANK_DESCRIPTION, bot.me.id),
+
                 dpp::slashcommand(CMD_INIT_USER, CMD_INIT_USER_DESCRIPTION, bot.me.id)
                     .add_option(dpp::command_option(dpp::co_string, ARG_USER_NAME, ARG_USER_NAME_DESCRIPTION, true)),
+
                 dpp::slashcommand(CMD_INFO_BANK, CMD_INFO_BANK_DESCRIPTION, bot.me.id),
-                dpp::slashcommand(CMD_INFO_ACCOUNT, CMD_INFO_ACCOUNT_DESCRIPTION, bot.me.id),
+
+                dpp::slashcommand(CMD_INFO_ACCOUNT, CMD_INFO_ACCOUNT_DESCRIPTION, bot.me.id)
+                    .add_option(dpp::command_option(dpp::co_user, ARG_USER_NAME, ARG_USER_NAME_DESCRIPTION, false)),
+
                 dpp::slashcommand(CMD_NEW_MONEY, CMD_NEW_MONEY_DESCRIPTION, bot.me.id)
                     .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
                     .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_SYMBOL, ARG_MONEY_SYMBOL_DESCRIPTION, true)),
+
                 dpp::slashcommand(CMD_INFO_MONEY, CMD_INFO_MONEY_DESCRIPTION, bot.me.id)
                     .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true)),
+
                 dpp::slashcommand(CMD_DEPOSIT, CMD_DEPOSIT_DESCRIPTION, bot.me.id)
                     .add_option(dpp::command_option(dpp::co_user, ARG_RECEIVER_ID, ARG_RECEIVER_ID_DESCRIPTION, true))
                     .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
                     .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true)),
+
                 dpp::slashcommand(CMD_PAYMENT, CMD_PAYMENT_DESCRIPTION, bot.me.id)
                     .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
                     .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true)),
+
                 dpp::slashcommand(CMD_TRANSFERENCE, CMD_TRANSFERENCE_DESCRIPTION, bot.me.id)
                     .add_option(dpp::command_option(dpp::co_user, ARG_RECEIVER_ID, ARG_RECEIVER_ID_DESCRIPTION, true))
                     .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
                     .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true)),
+
                 dpp::slashcommand(CMD_HIRE_USER, CMD_HIRE_USER_DESCRIPTION, bot.me.id)
                     .add_option(dpp::command_option(dpp::co_user, ARG_USER_NAME, ARG_USER_NAME_DESCRIPTION, true))
                     .add_option(dpp::command_option(dpp::co_string, ARG_JOB_NAME, ARG_JOB_NAME_DESCRIPTION, true))
                     .add_option(dpp::command_option(dpp::co_string, ARG_MONEY_ID, ARG_MONEY_ID_DESCRIPTION, true))
                     .add_option(dpp::command_option(dpp::co_integer, ARG_MONEY_VALUE, ARG_MONEY_VALUE_DESCRIPTION, true)),
+
                 dpp::slashcommand(CMD_FIRE_USER, CMD_FIRE_USER_DESCRIPTION, bot.me.id)
                     .add_option(dpp::command_option(dpp::co_user, ARG_USER_NAME, ARG_USER_NAME_DESCRIPTION, false)),
+
                 dpp::slashcommand(CMD_PAY_CLIENT, CMD_PAY_CLIENT_DESCRIPTION, bot.me.id)
             };
 

@@ -1,9 +1,15 @@
 #pragma once
+#include <cstddef>
+#include <ctime>
 #include <optional>
 #include <string>
 #include "accont.hpp"
 #include "status.hpp"
 #include "job.hpp"
+
+
+
+#define DAY_T 86400L
 
 /*
  * @Client User of SysBank, represent the users of a Bank within CentralBank
@@ -16,7 +22,7 @@ class ClientUser {
     Account* account;
 
     std::optional<ImprovisedJob> job;
-
+    time_t last_salary;
 
     public:
 
@@ -30,6 +36,7 @@ class ClientUser {
     ClientUser(const std::string& global_name, const  std::string& user_id): user_id(user_id) {
         this->global_name = global_name;
         this->account = nullptr;
+        this->last_salary = 0;
     }
 
     /*
@@ -90,4 +97,13 @@ class ClientUser {
 
 
     Status salaryPay();
+
+
+    time_t getLastPay() const {return last_salary;}
+
+
+    bool canBPayed() const {return time(NULL) - last_salary >= DAY_T;}
+
+
+    void updateLastSalay() {this->last_salary = time(NULL);}
 };

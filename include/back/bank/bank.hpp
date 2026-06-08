@@ -146,7 +146,7 @@ class Bank {
     Status newClient(const std::string& id, const std::string& global_name);
 
 
-    ClientUser* getClient(const std::string& id) const {
+    ClientUser* getClient(const std::string& id) {
         return clients.getClient(id);
     }
 

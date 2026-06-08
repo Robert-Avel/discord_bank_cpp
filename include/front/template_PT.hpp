@@ -91,7 +91,7 @@ fields_PT = {
     {PL_BANK, {"ID", "Nº Contas"}},
     {PL_ACCOUNT, {"ID", "Saldo(s)"}},
     {PL_IMPROVISED_JOB, {"Cargo", "Salário"}},
-    {PL_CLIENT, {"Nome", "ID", "ID do Banco", "Saldo(s)"}},
+    {PL_CLIENT, {"Nome", "ID", "ID do Banco", "Saldo(s)", "Emprego"}},
 };
 
 
@@ -127,7 +127,8 @@ status_PT = {
     {Status::PAYER_NOT_FOUND, "O Pagador não foi encontrado"},
     {Status::NO_JOB, "Cliente sem um Emprego atual"},
     {Status::CLIENT_NOT_FOUND, "Cliente não encontrado"},
-    {Status::BALANCE_IN_MAX, "O Pagador não foi encontrado"}
+    {Status::BALANCE_IN_MAX, "O Pagador não foi encontrado"},
+    {Status::IN_COOLDOWN, "Aguarde..."}
 };
 
 
@@ -211,6 +212,7 @@ messages_PT = {
     {{PAY_CLIENT, Status::NO_JOB},                "🚫 O Cliente não possui um Emprego"},
     {{PAY_CLIENT, Status::ACCOUNT_NOT_FOUND},     "🚫 Conta do cliente inexistente ou nâo foi encontada"},
     {{PAY_CLIENT, Status::BALANCE_IN_MAX},        "🚫 O Saldo chegou ao limite possivel."},
+    {{PAY_CLIENT, Status::IN_COOLDOWN},        "🚫 Você já resgatou o salário hoje, Aguarde até a proxima data."},
     {{PAY_CLIENT, Status::SUCCESS},               "📥 Depósito confirmado! O valor foi adicionado ao seu saldo seguro."},
 
 

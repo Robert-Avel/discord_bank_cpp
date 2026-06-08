@@ -88,7 +88,8 @@ FieldMap FinalPayLoad::formatField(const PayloadVariant& pl) {
             {fields_PT.at(PL_CLIENT)[0], p.global_name},
             {fields_PT.at(PL_CLIENT)[1], p.id},
             {fields_PT.at(PL_CLIENT)[2], p.bank_id},
-            {fields_PT.at(PL_CLIENT)[3], p.balances}
+            {fields_PT.at(PL_CLIENT)[3], p.balances},
+            {fields_PT.at(PL_CLIENT)[4], p.job}
         };
     }
     else {
