@@ -28,7 +28,7 @@ class CentralBank {
 
     //Getters
     Bank* getBank(std::string id);
-    const std::vector<Bank>* getBankData() const {return &this->banks;}
+    std::vector<Bank>& getBankData() {return this->banks;}
 
     size_t getBankN() const {return banks.size();};
 

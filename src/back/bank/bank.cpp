@@ -5,10 +5,10 @@
 #include "money.hpp"
 
 
-Account* Bank::getAccont(const std::string id) const {
-    for(const Account& a: acconts) {
+Account* Bank::getAccont(const std::string id) {
+    for(Account& a: acconts) {
         if(id == a.getID()) {
-            return const_cast<Account*>(&a);
+            return &a;
         }
     }
     return nullptr;

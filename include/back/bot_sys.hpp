@@ -11,9 +11,9 @@ class DiogoBotSys {
 
     std::mutex mutex;
     private:
-        /*
-         * Link All accounts to their client to quick acess
-         */
+    /*
+    * Link All accounts to their client to quick acess
+    */
     void linkAccounts();
 
     /*
@@ -25,6 +25,9 @@ class DiogoBotSys {
      * @return A pointer to that account, nullptr if not found or not linked
      */
     Account* getClientAccount(std::string& bank_id, std::string& client_id);
+
+
+    bool save(std::string filename);
 
     public:
         CentralBank central_bank;

@@ -10,7 +10,7 @@ namespace save {
     bool money(const Money& m, std::ofstream& file);
     bool account(const Account& c, std::ofstream& file);
     bool bank(const Bank& b, std::ofstream& file);
-    bool central_bank(const CentralBank& cb, std::ofstream& file);
+    bool central_bank(CentralBank& cb, std::ofstream& file);
 }
 
 

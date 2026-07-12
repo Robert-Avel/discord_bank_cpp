@@ -38,7 +38,7 @@ const cents Account::getBalance(std::string money_id) {
 }
 
 Status Account::addMoney(std::string id, std::string symbol, cents value) {
-    if(value >= MAX_BALANCE) {return BALANCE_IN_MAX;}
+    if(value >= MAX_BALANCE()) {return BALANCE_IN_MAX;}
 
     Money* money = _getMoney(id);
     if (money == nullptr) {
@@ -48,7 +48,7 @@ Status Account::addMoney(std::string id, std::string symbol, cents value) {
         return SUCCESS;
     }
 
-    if(money->value + value >= MAX_BALANCE) {return BALANCE_IN_MAX;}
+    if(money->value + value >= MAX_BALANCE()) {return BALANCE_IN_MAX;}
 
     money->value += value;
     return SUCCESS;

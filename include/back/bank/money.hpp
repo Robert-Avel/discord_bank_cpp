@@ -5,7 +5,9 @@
 
 typedef uint32_t cents;
 
-#define MAX_BALANCE std::numeric_limits<uint32_t>::max()
+inline uint32_t MAX_BALANCE() {
+    return std::numeric_limits<uint32_t>::max();
+}
 
 
 /*

@@ -35,7 +35,7 @@ class Bank {
 
     @return Ponteiro para a conta se encontrada; caso contrário, retorna nullptr.
     */
-    Account* getAccont(const std::string id) const;
+    Account* getAccont(const std::string id);
 
     /*
     @brief Obtém uma cópia constante do vetor de todas as contas.

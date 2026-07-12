@@ -5,13 +5,16 @@
 #include "base_payload.hpp"
 #include "client_user.hpp"
 #include "money.hpp"
+#include "saver.hpp"
 #include <ctime>
+#include <fstream>
+#include <ios>
 #include <mutex>
 #include <string>
 
 
 void DiogoBotSys::linkAccounts() {
-    for(const Bank& b: *central_bank.getBankData()) {
+    for(Bank& b: central_bank.getBankData()) {
         for(ClientUser& cu: b.getClientData().getAllClient()) {
             Account* a = b.getAccont(cu.getUserID());
             if(a != nullptr) {
@@ -84,6 +87,7 @@ BasePayLoad DiogoBotSys::user_info(std::string bank_id, std::string user_id) {
     if (c->getAccount() == nullptr) {
         return {op, ACCOUNT_NOT_FOUND, user_id};
     }
+
 
     std::string job_info = (c->getJob() ? c->getJob()->getJobName(): "N/A");
 
@@ -311,4 +315,14 @@ BasePayLoad DiogoBotSys::pay_client(std::string bank_id, std::string client_id) 
         cu->salaryPay(),
         payload::Deposit{job->getSalary().value, job->getSalary()._mt, client_id}
     };
+}
+
+
+bool DiogoBotSys::save(std::string filename) {
+    std::ofstream saver(filename, std::ios::binary | std::ios::trunc | std::ios::in);
+    if(!saver) {
+        return false;
+    }
+    save::central_bank(this->central_bank, saver);
+    return true;
 }

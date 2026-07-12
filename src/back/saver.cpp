@@ -86,7 +86,7 @@ bool save::bank(const Bank& b, std::ofstream& file) {
 }
 
 
-bool save::central_bank(const CentralBank& cb, std::ofstream& file) {
+bool save::central_bank(CentralBank& cb, std::ofstream& file) {
     if (!file) {
         std::cerr << "Error: File stream is not open or is in an error state.\n";
         return false;
@@ -94,7 +94,7 @@ bool save::central_bank(const CentralBank& cb, std::ofstream& file) {
 
     int32_t bank_n = cb.getBankN();
     file.write( (char*) &bank_n, sizeof(int32_t));
-    for(const Bank& b: *cb.getBankData()) {
+    for(Bank& b: cb.getBankData()) {
         save::bank(b, file);
     }
 
